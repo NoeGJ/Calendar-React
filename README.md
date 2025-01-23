@@ -12,5 +12,5 @@ Currently, two official plugins are available:
 # Pasos a seguir
 
 - Instalar yarn
-- Instalar dependencias con el comando yarn install
+- Instalar dependencias con el comando "yarn install"
 - Ejecutar el siguiente comando CLI "yarn dev"
