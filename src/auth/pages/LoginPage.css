@@ -1,11 +1,25 @@
 
 .login-container{
-    margin-top: 15%;
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.login-container button{
+    color: #0062cc;
+    border: none;
+    background: none;
+    outline: none;
+    margin-left: 10%;    
 }
 .login-form-1{
     border-radius: 5px;
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
     padding: 5%;
+    width: 50%;
+    max-width: 500px;
+    min-width: 280px;
+
 }
 .login-form-1 h3{
     text-align: center;
@@ -15,7 +29,7 @@
     border-radius: 5px;
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
     padding: 5%;
-    background: #0062cc;
+    /*background: #0062cc;*/
 }
 .login-form-2 h3{
     text-align: center;
