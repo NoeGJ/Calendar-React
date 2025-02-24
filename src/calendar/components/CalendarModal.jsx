@@ -1,4 +1,4 @@
-import { addHours, differenceInSeconds } from "date-fns";
+import { addHours, differenceInSeconds, set } from "date-fns";
 import { useMemo, useState } from "react";
 import Modal from "react-modal";
 import Swal from "sweetalert2";
@@ -78,6 +78,8 @@ export const CalendarModal = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
+    formValues.end = set(new Date(formValues.end), {year: formValues.start.getFullYear(), month: formValues.start.getMonth(), date: formValues.start.getDate()})
+      
     const difference = differenceInSeconds( formValues.end, formValues.start );
 
     if ( isNaN( difference ) || difference <= 0 ){
@@ -86,6 +88,7 @@ export const CalendarModal = () => {
     }
 
     if( formValues.title.length <= 0) return;
+
 
     await startSavingEvent( formValues );
     closeDateModal();
@@ -106,7 +109,7 @@ export const CalendarModal = () => {
       <hr />
       <form className="container" onSubmit={ onSubmit }>
         <div className="form-group mb-2">
-          <label>Fecha y hora inicio</label>
+          <label>Fecha y hora</label>
 
           <DatePicker 
             selected={ formValues.start }
@@ -121,15 +124,16 @@ export const CalendarModal = () => {
         </div>
 
         <div className="form-group mb-2">
-          <label>Fecha y hora fin</label>
+          <label>Hora fin</label>
           <DatePicker
             minDate={ formValues.start }
             selected={ formValues.end }
             className="form-control"
             wrapperClassName="w-100"
             onChange={ (event) => onDateChanged(event, 'end') }
-            dateFormat="Pp"
+            dateFormat="HH:mm"
             showTimeSelect
+            showTimeSelectOnly
             locale="es"
             timeCaption="Hora"
           />
