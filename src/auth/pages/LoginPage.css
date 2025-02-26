@@ -1,9 +1,12 @@
-
-.login-container{
-    margin-top: 10%;
+.login-container {
+    margin-top: 0%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between; 
     align-items: center;
+    width: 100%; 
+    margin-right: -0%;
+    height: auto;
+
 }
 .login-container button{
     color: #0062cc;
@@ -12,25 +15,27 @@
     outline: none;
     margin-left: 10%;    
 }
-.login-form-1{
+.login-form-1, .login-form-2 {
     border-radius: 5px;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     padding: 5%;
     width: 50%;
     max-width: 500px;
     min-width: 280px;
-
+    background: rgba(255, 255, 255, 0.9); 
+    margin-left: auto; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    height: 100vh; 
 }
+
 .login-form-1 h3{
     text-align: center;
     color: #333;
 }
-.login-form-2{
-    border-radius: 5px;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
-    padding: 5%;
-    /*background: #0062cc;*/
-}
+
 .login-form-2 h3{
     text-align: center;
     color: #fff;
@@ -65,4 +70,14 @@
     color: #0062cc;
     font-weight: 600;
     text-decoration: none;
+}
+.login-background {
+    background-image: url('/calendario.png'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+
+    height: 100vh; 
+    margin: 0;
+    padding: 0;
 }

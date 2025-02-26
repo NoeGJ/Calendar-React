@@ -22,14 +22,16 @@ export const LoginPage = () => {
     const text = isLogin ? "¿No tienes una cuenta?" : "¿Ya tienes cuenta? Inicia sesión";
 
     return (
-        <div className="container login-container">
+        <div className='login-background'>
+            <div className="container login-container">
             
-                <div className=" login-form-1">
-                    { isLogin ? <LoginContent /> : <RegisterContent /> }
-                    <button
-                    onClick={ () => setIsLogin((state) => !state) }
-                    > { text } </button>
+                    <div className=" login-form-1">
+                        { isLogin ? <LoginContent /> : <RegisterContent /> }
+                        <button
+                        onClick={ () => setIsLogin((state) => !state) }
+                        > { text } </button>
                 </div>
+            </div>
         </div>
     )
 }
@@ -53,7 +55,7 @@ export const LoginContent = () => {
     
     return(
           <>
-            <h3>Ingreso</h3>
+            <h3>I N G R E S O</h3>
             <form onSubmit={ loginSubmit }>
                 <div className="form-group mb-2">
                     <input 
@@ -106,7 +108,7 @@ export const RegisterContent = () => {
 
     return(
         <>
-            <h3>Registro</h3>
+            <h3>R E G I S T R O</h3>
             <form onSubmit={ registerSubmit }>
                 <div className="form-group mb-2">
                     <input
