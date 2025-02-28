@@ -2,12 +2,12 @@
 
 export const CalendarEventBox = ({ event }) => {
   
-    const { title, user } = event;
+    const { title, creator } = event;
   
     return (
     <>
       <strong>{ title }</strong>
-      <span> - { user.name }</span>
+      <span> - { creator?.username }</span>
     </>
   )
 }
