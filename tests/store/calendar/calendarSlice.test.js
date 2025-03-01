@@ -23,10 +23,21 @@ describe('Pruebas en calendarSlice', () => {
             start: new Date('2024-07-17 13:00:00'),
             end: new Date('2024-07-17 15:00:00'),
             title: 'Testing 3',
-            notes: 'Nota 3'
+            notes: 'Nota 3',
+            activities: [
+                {
+                    id: 1,
+                    name: "Planeacion del proyecto",
+                    status: 0,
+                    eventId: 3
+
+                }
+            ]
         }
 
         const state = calendarSlice.reducer( calendarWithEventsState, onAddNewEvent( newEvent ) );
+        console.log(state.events[2]);
+        
         expect( state.events ).toEqual([ ...events, newEvent ]);
     })
 

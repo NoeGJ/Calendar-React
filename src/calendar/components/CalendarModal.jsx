@@ -37,8 +37,11 @@ export const CalendarModal = () => {
     notes: '',
     start: new Date(),
     end:  addHours( new Date(), 2),
-
   });
+
+  const [activities, setActivities] = useState([])
+
+  const [activity, setActivity] = useState('')
 
   const titleClass = useMemo(() => {
     if( !formSubmitted ) return '';
@@ -78,6 +81,8 @@ export const CalendarModal = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
+    console.log({...formValues, activities: activities});
+    
     const difference = differenceInSeconds( formValues.end, formValues.start );
 
     if ( isNaN( difference ) || difference <= 0 ){
@@ -86,11 +91,38 @@ export const CalendarModal = () => {
     }
 
     if( formValues.title.length <= 0) return;
+    
+    await startSavingEvent({ ...formValues, activities: activities });
 
-    await startSavingEvent( formValues );
     closeDateModal();
     setFormSubmitted(false);
 
+  }
+
+  // Actividades
+  const onClickBtnAdd = () => {
+    if (activity.trim() === "") return;
+    
+    setActivities([...activities, { status: 0, name: activity }]);
+    setActivity("");
+  }
+
+  const onInputActChanged = ({ target }) => {
+    if ( target.value.length > 30 ) return;
+    setActivity( target.value );
+  }
+
+  const toggleCompleted = ( index ) => {
+    const newActivities = activities.map((act, i) =>
+      i ===  index ? { ...act, status: + !act.status } : act
+    );
+    setActivities(newActivities)
+  }
+
+  const onClickDeleteActivity = ( index ) => {
+    setActivities( 
+      activities.filter((act, i) =>  i !== index 
+    ));
   }
 
   return (
@@ -105,6 +137,7 @@ export const CalendarModal = () => {
       <h1> Nuevo evento </h1>
       <hr />
       <form className="container" onSubmit={ onSubmit }>
+        <div className="overflow-auto modal-container">
         <div className="form-group mb-2">
           <label>Fecha y hora inicio</label>
 
@@ -167,6 +200,52 @@ export const CalendarModal = () => {
           </small>
         </div>
 
+        <hr/>
+        <div className="form-group mb-2">
+          <label>Actividades</label>
+          <div className="d-flex">    
+              <input               
+              type="text"
+              className="form-control"
+              placeholder="Actividad"
+              name="activity"
+              value={ activity }
+              onChange={ onInputActChanged }
+              />          
+              <button type="button" className="btn btn-light mb-1 " onClick={ onClickBtnAdd }>
+                <i className="fa fa-plus"></i>
+              </button>          
+          </div>
+          <ul className="list-group mt-2">
+            { activities.map( (act, index) => (
+              <li
+                key={ index }
+                className={`list-group-item d-flex justify-content-between align-items-center 
+                  ${act.status ? "list-group-item-success" : ""}`}
+
+              >
+                <span
+                  onClick={() => toggleCompleted( index )}
+                  style={{cursor:  "pointer", flexGrow: 1 }}
+                >
+                  { act.name }
+                </span>
+                <span className={`badge ${act.status ? "bg-success" : "bg-secondary"} mr-2`}>
+                  {act.status ? "Completado": "Pendiente"}
+                </span>
+                <button
+                  className="btn btn-sm"
+                  type="button"
+                  onClick={ () => onClickDeleteActivity( index ) }
+                >
+                  <i className="fa fa-close"></i>
+                </button>
+              </li>
+            ))
+            }
+          </ul>
+        </div>
+        </div>
         <button type="submit" className="btn btn-outline-primary btn-block">
           <i className="far fa-save"></i>
           <span> Guardar</span>
