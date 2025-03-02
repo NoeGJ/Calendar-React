@@ -81,7 +81,7 @@ export const CalendarModal = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
-    console.log({...formValues, activities: activities});
+    //console.log({...formValues, activities: activities});
     
     const difference = differenceInSeconds( formValues.end, formValues.start );
 
