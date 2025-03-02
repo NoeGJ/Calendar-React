@@ -35,6 +35,7 @@ export const useCalendarStore = () => {
             } 
             //creating
             const { data } = await calendarApi.post('/events', calendarEvent );
+            const { data } = await calendarApi.post('/events', {...eventDto, creatorId: user.uid, groupId: 1} ); 
 
             await calendarApi.post('/activities', calendarEvent );
 
@@ -66,7 +67,8 @@ export const useCalendarStore = () => {
     const startLoadingEvents = async() => {
         try {
             const { data } = await calendarApi.get('/events');
-            const events = convertEventsToDateEvents( data.events );
+            
+            const events = convertEventsToDateEvents( data );
             dispatch( onLoadEvents( events ) );
             //console.log(events);
 
