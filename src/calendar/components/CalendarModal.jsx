@@ -51,8 +51,17 @@ export const CalendarModal = () => {
   }, [formValues.title, formSubmitted])
 
   useEffect(() => {
+
+    
     if( activeEvent !== null ){
-      setFormValues({ ...activeEvent });
+      
+      console.log(activeEvent);
+      const { activities, ...event } = activeEvent
+      console.log(activities);
+      
+      setFormValues({ ...event });
+
+      setActivities( activities ? activities : [] );
     }
   
   }, [activeEvent])
@@ -81,7 +90,7 @@ export const CalendarModal = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
-    //console.log({...formValues, activities: activities});
+    console.log({...formValues, activities: activities});
     
     const difference = differenceInSeconds( formValues.end, formValues.start );
 
@@ -103,7 +112,7 @@ export const CalendarModal = () => {
   const onClickBtnAdd = () => {
     if (activity.trim() === "") return;
     
-    setActivities([...activities, { status: 0, name: activity }]);
+    setActivities([...activities, { status: 'Pending', name: activity }]);
     setActivity("");
   }
 
@@ -114,7 +123,7 @@ export const CalendarModal = () => {
 
   const toggleCompleted = ( index ) => {
     const newActivities = activities.map((act, i) =>
-      i ===  index ? { ...act, status: + !act.status } : act
+      i ===  index ? { ...act, status: act.status == "Pending"? "Completed" : "Pending" } : act
     );
     setActivities(newActivities)
   }
@@ -221,7 +230,7 @@ export const CalendarModal = () => {
               <li
                 key={ index }
                 className={`list-group-item d-flex justify-content-between align-items-center 
-                  ${act.status ? "list-group-item-success" : ""}`}
+                  ${act.status == "Completed" ? "list-group-item-success" : ""}`}
 
               >
                 <span
@@ -230,8 +239,8 @@ export const CalendarModal = () => {
                 >
                   { act.name }
                 </span>
-                <span className={`badge ${act.status ? "bg-success" : "bg-secondary"} mr-2`}>
-                  {act.status ? "Completado": "Pendiente"}
+                <span className={`badge ${act.status == "Completed" ? "bg-success" : "bg-secondary"} mr-2`}>
+                  {act.status == "Completed" ? "Completado": "Pendiente"}
                 </span>
                 <button
                   className="btn btn-sm"
