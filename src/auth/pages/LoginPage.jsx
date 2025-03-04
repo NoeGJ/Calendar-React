@@ -37,13 +37,14 @@ export const LoginPage = () => {
 }
 
 export const LoginContent = () => {
-    const { startLogin,  errorMessage } = useAuthStore();
-
+    const { startLogin,  message } = useAuthStore();
+    
     useEffect(() => {
-        if( errorMessage !== undefined ) {
-          Swal.fire('Error en la autentificación', errorMessage, 'error');
+        if( message !== undefined ) {
+            
+          Swal.fire('Error en la autentificación', message, 'error');
         }
-      }, [errorMessage])
+      }, [message])
 
     const { loginEmail, loginPassword, onInputChange:onLoginInputChange } = useForm( loginFormFields );
     
@@ -92,8 +93,17 @@ export const LoginContent = () => {
 
 export const RegisterContent = () => {
 
-    const { startRegister } = useAuthStore();
+
+    const { startRegister, message } = useAuthStore();
     const { registerName, registerEmail, registerPassword, registerPassword2, onInputChange:onRegisterInputChange } = useForm( registerFormFields );
+
+    
+
+    useEffect(() => {
+        if( message !== undefined ) {            
+          Swal.fire('Error en la autentificación', message, 'error');
+        }
+      }, [message])
     
     const registerSubmit = ( event ) => {
         event.preventDefault();

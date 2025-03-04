@@ -55,9 +55,7 @@ export const CalendarModal = () => {
     
     if( activeEvent !== null ){
       
-      console.log(activeEvent);
       const { activities, ...event } = activeEvent
-      console.log(activities);
       
       setFormValues({ ...event });
 
@@ -84,13 +82,12 @@ export const CalendarModal = () => {
   const onCloseModal = () => {
     closeDateModal();
     setActiveEvent(null);
+    setActivity("");
   };
 
   const onSubmit = async(event) => {
     event.preventDefault();
     setFormSubmitted(true);
-
-    console.log({...formValues, activities: activities});
     
     const difference = differenceInSeconds( formValues.end, formValues.start );
 

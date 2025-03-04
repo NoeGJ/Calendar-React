@@ -5,7 +5,7 @@ import { clearErrorMessage, onChecking, onLogin, onLogout, onLogoutCalendar } fr
 
 export const useAuthStore = () => {
 
-    const { status, user, errorMessage } = useSelector( state => state.auth );
+    const { status, user, message } = useSelector( state => state.auth );
     const dispatch = useDispatch();
 
     const startLogin = async({ email, password }) => {
@@ -15,9 +15,10 @@ export const useAuthStore = () => {
             const { data } = await calendarApi.post('/login', { email, password });
             localStorage.setItem('token', data.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-            dispatch( onLogin({ name: data.username, uid: data.uid }) );
+            dispatch( onLogin({ username: data.username, uid: data.uid }) );
 
         } catch (error) {
+        
             dispatch(onLogout('Credenciales incorrectas') );
             setTimeout(() => {
                 dispatch( clearErrorMessage()  );
@@ -34,10 +35,14 @@ export const useAuthStore = () => {
 
             localStorage.setItem('token', data.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-            dispatch( onLogin({ name: data.username, uid: data.uid }) );
+            dispatch( onLogin({ username: data.username, uid: data.uid }) );
 
         } catch (error) {
-            dispatch( onLogout( error.response.data?.msg || '' ) );
+            const { password, email, username } = error.response.data;
+            let msg = `${ password? password : '' }\n${ email? email : '' }\n${ username? username : '' }`
+
+            
+            dispatch( onLogout( msg ) );
             setTimeout(() => {
                 dispatch( clearErrorMessage()  );
             }, 10);
@@ -52,7 +57,7 @@ export const useAuthStore = () => {
             const { data } = await calendarApi.get('/auth/renew');
             localStorage.setItem('token', data.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-            dispatch( onLogin({ name: data.username, uid: data.uid }) );
+            dispatch( onLogin({ username: data.username, uid: data.uid }) );
         } catch (error) {
             localStorage.clear();
             return dispatch( onLogout() );
@@ -68,7 +73,7 @@ export const useAuthStore = () => {
     return {
         status,
         user,
-        errorMessage,
+        message,
 
         checkAuthToken,
         startLogin,

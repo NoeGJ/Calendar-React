@@ -23,10 +23,6 @@ export const useCalendarStore = () => {
         try {
             const { activities, ...event } = calendarEvent
             
-            console.log(event);
-            console.log(activities);
-            
-
             if( calendarEvent.id ){
                 //updating
 
@@ -40,16 +36,18 @@ export const useCalendarStore = () => {
                 return;
             } 
             //creating
+            
             const { data } = await calendarApi.post('/events', {...calendarEvent, creatorId: user.uid, groupId: 1} ); 
 
+            
             if(activities.length){
-                await calendarApi.put(`/activities/create-many-from-event/${ calendarEvent.id }`, activities );
+                await calendarApi.put(`/activities/create-many-from-event/${ data.id }`, activities );
             }
 
-            dispatch( onAddNewEvent({ ...event, id: data.id, user, activities }) );
+            dispatch( onAddNewEvent({ ...event, id: data.id, creator: user, activities }) );
 
         } catch (error) {
-            console.log(error);
+            //console.log(error);
             Swal.fire('Error al guardar', error.response.data?.msg, 'error');
         }
     }
@@ -73,7 +71,6 @@ export const useCalendarStore = () => {
             
             const events = convertEventsToDateEvents( data );
             dispatch( onLoadEvents( events ) );
-            console.log(events);
 
         } catch (error) {
             console.log('Error cargando eventos');
