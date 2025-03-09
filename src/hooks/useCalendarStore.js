@@ -22,6 +22,9 @@ export const useCalendarStore = () => {
 
         try {
             const { activities, ...event } = calendarEvent
+
+            
+            
             
             if( calendarEvent.id ){
                 //updating
