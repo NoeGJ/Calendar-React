@@ -1,9 +1,10 @@
 import { addHours } from "date-fns";
-import { useCalendarStore, useUiStore } from "../../hooks";
+import { useCalendarStore, useGroupsStore, useUiStore } from "../../hooks";
 
 export const FabAddNew = () => {
   const { openDateModal } = useUiStore();
   const { setActiveEvent } = useCalendarStore();
+  const { activeGroup } = useGroupsStore();
 
   const handleClickNew = () => {
     setActiveEvent({      
@@ -18,7 +19,9 @@ export const FabAddNew = () => {
   };
 
   return (
-    <button className="btn btn-primary fab" onClick={handleClickNew}>
+    <button className="btn btn-primary fab" onClick={handleClickNew}
+    style={{ display: activeGroup ? '' : 'none' }}
+    >
       <i className="fas fa-plus"></i>
     </button>
   );
