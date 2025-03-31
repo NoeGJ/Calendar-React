@@ -9,9 +9,14 @@ import { MembersModal } from "../components/MembersModal";
 export const ListRepoView = () => {
 
 const imageRef = useRef();
-const [selectedFile, setSelectedFile] = useState();
+// const [selectedFile, setSelectedFile] = useState({
+//   name: '',
+//   fileType: '',
+//   size: 0,
+//   uploadedAt: new Date()
+// });
 
-const { loadFiles, files, downloadFile, deleteFile, uploadFile } = useRepoStore();
+const { loadFiles, files, downloadFile, deleteFile, uploadFile, setSelectedFile, selectedFile } = useRepoStore();
 const { activeGroup } = useGroupsStore();
 const { user } = useAuthStore();
 
@@ -26,19 +31,34 @@ const handleNewFile = () => {
     
 }
 
-const handleChange = ( { target } ) => {
-  const file = Array.from(target.files);
-  console.log(target.files);
-  
-  console.log({ ...file });
-  
-  setSelectedFile( { ...file[0], groupId: activeGroup.id, userId: user.id  } );
-  
-  console.log( selectedFile );
+const handleChange = ( event ) => {
+  const file = event.target.files[0]; // Asegúrate de tomar el primer archivo
 
-  uploadFile( selectedFile );
+  console.log(file);
+  
 
-  setSelectedFile();
+  transferData( file )
+
+  //setSelectedFile();
+  
+}
+
+const transferData = async( file ) => {
+
+  //console.log( file );
+
+  if (!file) return; 
+
+  const fileData = {
+    name: file.name,
+    fileType: file.type,
+    size: file.size,
+    uploadedAt: new Date(), 
+    groupId: activeGroup.id,
+    userId: user.id  
+  };
+  
+  await uploadFile( fileData );
   
 }
 
@@ -54,9 +74,9 @@ const handleDelete = ( file ) => {
 
 const handleDrop = ( event ) => {
   event.preventDefault();
-  //const data = event.dataTransfer.getData();
-  console.log(event.dataTransfer.files);
-  
+  const file = event.dataTransfer.files[0]
+  //console.log(event.dataTransfer.files);
+  transferData( file )
 }
 
 const handleDragOver = ( event ) => {

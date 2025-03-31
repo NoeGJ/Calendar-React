@@ -11,7 +11,7 @@ export const CalendarView = () => {
   const { user } = useAuthStore();
   const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
   const { openDateModal } = useUiStore();
-  const { activeGroup, setCurrentPermissions } = useGroupsStore();
+  const { activeGroup, setCurrentPermissions, subscribedMembers } = useGroupsStore();
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week')
 
   const eventStyleGetter = ( event, start, end, isSelected ) => {
@@ -47,6 +47,8 @@ export const CalendarView = () => {
     
     startLoadingEvents();
     setCurrentPermissions( activeGroup.id );
+    console.log(subscribedMembers);
+    
   }, [activeGroup])
   
 

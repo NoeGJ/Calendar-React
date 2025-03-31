@@ -222,6 +222,7 @@ export const groupsSlice = createSlice({
         activeGroup: null,
         currentPermissions: {},
         unsubscribedMembers: [],
+        subscribedMembers: [],
         isLoadingMembers: true,
     },
     reducers: {
@@ -264,6 +265,10 @@ export const groupsSlice = createSlice({
                 }
             });
         },
+        onLoadsubscribedMembers: ( state, { payload } ) => {
+            state.isLoadingMembers = false;
+            state.subscribedMembers = payload;
+        },
         onLoadunsubscribed: ( state, { payload = [] } ) => {
             state.isLoadingMembers = false;
             console.log(payload);
@@ -273,8 +278,8 @@ export const groupsSlice = createSlice({
         },
 
         onAddNewMember: (state, { payload }) => {
-            const { grupo } = state.currentPermissions;
-            grupo.members.append( payload )
+            
+            state.subscribedMembers.append( payload )
         },
         onLogoutGroups: ( state ) => {
             //state.isLoadingGroups = true
@@ -295,5 +300,6 @@ export const {
     onLogoutGroups,
     onAddNewMember,
 
-    onLoadunsubscribed
+    onLoadunsubscribed,
+    onLoadsubscribedMembers
 } = groupsSlice.actions;

@@ -14,7 +14,7 @@ const data = [
     {
         id: 2,
         tag: 1,
-        name: 'cat2.jpeg',
+        name: 'dog1.jpeg',
         fileType: 'image/jpeg',
         size: 525637,
         uploadedAt: "2025-03-21T20:36:22",
@@ -24,7 +24,7 @@ const data = [
     {
         id: 3,
         tag: 1,
-        name: 'cat2.jpeg',
+        name: 'background-city.jpeg',
         fileType: 'image/jpeg',
         size: 107329,
         uploadedAt: "2025-03-23T20:36:22",
@@ -34,7 +34,7 @@ const data = [
     {
         id: 4,
         tag: 1,
-        name: 'cat2.jpeg',
+        name: 'cat1.jpeg',
         fileType: 'image/jpeg',
         size: 525637,
         uploadedAt: "2025-03-24T20:36:22",
@@ -54,9 +54,15 @@ export const repoSlice = createSlice({
         selectedFile: null
         },
     reducers: {
-
+        onSetSelectedFile: ( state, { payload } ) => {            
+            state.selectedFile = payload;
+            
+        },
         onAddFile: ( state, { payload } ) => {
-            state.files.push( payload );
+            //const isEqual = state.files.some( file => file.id == payload.id );
+            const isEqual = state.files.some( file => file.name == payload.name );
+            if( !isEqual)
+                state.files.push( payload );
         },
         onDeleteFile: ( state, { payload }) => {            
             state.files = state.files.filter( ( file ) => file.id !== payload.id );
@@ -70,4 +76,4 @@ export const repoSlice = createSlice({
 
 });
 // Action creators are generated for each case reducer function
-export const { onAddFile, onDeleteFile, onLoadFiles } = repoSlice.actions;
+export const { onSetSelectedFile, onAddFile, onDeleteFile, onLoadFiles } = repoSlice.actions;

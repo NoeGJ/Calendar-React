@@ -22,7 +22,7 @@ const customStyles = {
 export const MembersModal = () => {
 
     const { isOpenModalMembers, closeModalMembers } = useMembersModal();
-    const { currentPermissions, startAddNewMember, loadUnsubscribed, unsubscribedMembers, activeGroup } = useGroupsStore();
+    const { currentPermissions, startAddNewMember, loadUnsubscribed, unsubscribedMembers, activeGroup, subscribedMembers } = useGroupsStore();
 
     const { grupo, can } = currentPermissions;
     
@@ -33,10 +33,11 @@ export const MembersModal = () => {
 
     useEffect(() => {
         loadUnsubscribed();
-        console.log(unsubscribedMembers);
+        //console.log(" DSAD",unsubscribedMembers);
+        //console.log(currentPermissions);
         
         
-    }, [])
+    }, [subscribedMembers])
     
 
     const handleInputChanged = ({ target }) => {
@@ -100,7 +101,7 @@ export const MembersModal = () => {
         </div>
         
         <div className="form-group mt-2">
-            <ul className="list-unstyled">{ grupo?.members.map( (member, index) => ( 
+            <ul className="list-unstyled">{ subscribedMembers.map( (member, index) => ( 
                 <li className="p-2" key={index}>
                     <div className="d-flex justify-content-between align-items-center">
                         <div>
@@ -109,8 +110,8 @@ export const MembersModal = () => {
                         </div>
                     <div className="">
                     <Dropdown   drop="end" >
-                        <Dropdown.Toggle variant="primary"  id="dropdown-basic">
-                            Creador
+                        <Dropdown.Toggle variant="primary"  id="dropdown-basic" style={{ width: '100px' }} disabled>
+                            { member.currentRoles.some( role => role.id == 1 ) ? 'Creador' : 'Miembro'  }
                         </Dropdown.Toggle>
                         
                         <Dropdown.Menu>

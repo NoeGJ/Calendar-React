@@ -49,7 +49,8 @@ export const UnselectedGroup = () => {
                                 </button>
                                 <div className="card-body justify-content-center align-items-center" style={{ cursor: 'pointer' }} onClick={ () => handleSelectGroup(group, index ) }>
                                     <h5 className="card-title">{group.name}</h5>
-                                    <p className="d-flex card-text"> Autor:</p>
+                                    <br/>
+                                    <p className="d-flex card-text"></p>
                                 </div>
                             </div>
                         </div>

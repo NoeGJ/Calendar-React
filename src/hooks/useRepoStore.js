@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { calendarApi } from "../api";
 import { useGroupsStore } from "./useGroupsStore";
-import { onLoadFiles, onDeleteFile, onAddFile } from "../store";
+import { onLoadFiles, onDeleteFile, onAddFile, onSetSelectedFile } from "../store";
 
 
 export const useRepoStore = () => {
@@ -17,9 +17,14 @@ export const useRepoStore = () => {
         selectedFile
     } = useSelector( state => state.repo );
 
+    const setSelectedFile = ( file ) => {
+        
+        dispatch( onSetSelectedFile( file ) );
+    }
+
     const uploadFile = async( file ) => {
-        const formData = new FormData();
-        formData.append('file', file.name);
+        console.log( file );
+        
 
         try {
             // const { data } = await calendarApi.post(`/files/upload`, formData, {
@@ -29,6 +34,8 @@ export const useRepoStore = () => {
 
             //Condicion para evitar agregar otro elemento a la lista (sobrescribir el archivo)
             dispatch( onAddFile( file ) );
+            //dispatch( onAddFile( data ) );
+            
             
         } catch (error) {
             console.log(error);
@@ -88,6 +95,7 @@ export const useRepoStore = () => {
         isUploadingFile,
         selectedFile,
 
+        setSelectedFile,
         uploadFile,
         deleteFile,
         loadFiles,
