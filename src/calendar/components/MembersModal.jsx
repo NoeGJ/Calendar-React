@@ -24,6 +24,7 @@ export const MembersModal = () => {
     const { isOpenModalMembers, closeModalMembers } = useMembersModal();
     const { currentPermissions, startAddNewMember, loadUnsubscribed, unsubscribedMembers, activeGroup, subscribedMembers } = useGroupsStore();
 
+
     const { grupo, can } = currentPermissions;
     
     const [email, setEmail] = useState('')
@@ -35,9 +36,10 @@ export const MembersModal = () => {
         loadUnsubscribed();
         //console.log(" DSAD",unsubscribedMembers);
         //console.log(currentPermissions);
+        console.log(" dsadad");
         
         
-    }, [subscribedMembers])
+    }, [])
     
 
     const handleInputChanged = ({ target }) => {
@@ -115,7 +117,7 @@ export const MembersModal = () => {
                         </Dropdown.Toggle>
                         
                         <Dropdown.Menu>
-                            {Object.entries(can).map( ([keys, value], index) => (
+                            {Object.entries(currentPermissions).map( ([keys, value], index) => (
                             
                             <Dropdown.Item key={index}><input type='checkbox' checked={ value } /> { keys } </Dropdown.Item>
 

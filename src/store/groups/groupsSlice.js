@@ -221,6 +221,7 @@ export const groupsSlice = createSlice({
         groups: [], //tempGroups,
         activeGroup: null,
         currentPermissions: {},
+        currentRoles: [],
         unsubscribedMembers: [],
         subscribedMembers: [],
         isLoadingMembers: true,
@@ -230,7 +231,13 @@ export const groupsSlice = createSlice({
             state.activeGroup = payload;
         },
         onSetCurrentPermissions: (state, { payload }) => {
-            state.currentPermissions = payload;
+
+            state.currentPermissions = payload.can;
+            state.currentRoles = payload.roles;
+
+            console.log(" slice ",state.currentRoles);
+            console.log(state.currentPermissions);
+            
         },
 
         onAddNewGroup: (state, { payload }) => {

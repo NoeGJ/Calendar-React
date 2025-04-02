@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRepoStore } from "../../hooks/useRepoStore";
-import { formatBytes } from "../../helpers";
+import { checkRole, formatBytes, getRolesList } from "../../helpers";
 import { format } from "date-fns";
 import { es } from 'date-fns/locale';
 import { useAuthStore, useGroupsStore } from "../../hooks";
 import { MembersModal } from "../components/MembersModal";
+import Swal from "sweetalert2";
+
+const LIMITE = 15000000;
+
 
 export const ListRepoView = () => {
 
@@ -16,27 +20,27 @@ const imageRef = useRef();
 //   uploadedAt: new Date()
 // });
 
-const { loadFiles, files, downloadFile, deleteFile, uploadFile, setSelectedFile, selectedFile } = useRepoStore();
-const { activeGroup } = useGroupsStore();
+const { files, downloadFile, deleteFile, uploadFile, loadFiles } = useRepoStore();
+const { activeGroup, currentRoles } = useGroupsStore();
 const { user } = useAuthStore();
 
-useEffect(() => {
-  //LoadFiles();
 
+useEffect(() => {
+  loadFiles();
+  
+  
 }, [])
 
 const handleNewFile = () => {
     imageRef.current.click();
 
-    
 }
 
 const handleChange = ( event ) => {
-  const file = event.target.files[0]; // Asegúrate de tomar el primer archivo
+  const file = event.target.files[0];
 
-  console.log(file);
+  //console.log(file);
   
-
   transferData( file )
 
   //setSelectedFile();
@@ -45,17 +49,28 @@ const handleChange = ( event ) => {
 
 const transferData = async( file ) => {
 
-  //console.log( file );
-
+  const res = checkRole(currentRoles, getRolesList().Subida) 
+  
+  if(!res) {
+    Swal.fire("No tienes permisos", "Contacta con el administrador" ); 
+    return;
+  }
+  
   if (!file) return; 
 
+  if (file.size >= LIMITE) {
+    Swal.fire("Limite Excedido", "El limite para subir archivos es de 15 MB");
+    return;
+  }
+
   const fileData = {
+    file,
     name: file.name,
     fileType: file.type,
     size: file.size,
     uploadedAt: new Date(), 
     groupId: activeGroup.id,
-    userId: user.id  
+    userId: user.uid  
   };
   
   await uploadFile( fileData );
@@ -63,8 +78,9 @@ const transferData = async( file ) => {
 }
 
 const handleDownload = ( file ) => {
+  
   //console.log(file);
-  downloadFile( file.id );
+  downloadFile( file );
   
 }
 
@@ -85,8 +101,9 @@ const handleDragOver = ( event ) => {
 
 
 return (
-  <>      
-    <table className="table table-hover">
+  <> 
+  <div >
+    <table className="table table-hover " >
       <thead>
       <tr>
         <th>Nombre</th>
@@ -114,7 +131,7 @@ return (
           </td>
         </tr>
       {files.map( (file, index) => (
-        <tr  key={ index }> 
+        <tr  key={ index } style={{  overflowY: 'auto' }}> 
         <td >{ file.name.split('.')[0] } </td>
         <td  > {  formatBytes(file.size) } </td>
         <td  > {  file.fileType } </td>
@@ -133,7 +150,7 @@ return (
       ))}
       </tbody>
     </table>      
-
+    </div>
     <MembersModal />      
   </>
 )

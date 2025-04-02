@@ -15,7 +15,7 @@ export const UnselectedGroup = () => {
     const colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-info']
 
     const handleSelectGroup = (group, index) => {
-        // setActiveGroup( group )
+        setActiveGroup( group )
         changeView({ type: 'Calendar', view: 1, group });
     }
 

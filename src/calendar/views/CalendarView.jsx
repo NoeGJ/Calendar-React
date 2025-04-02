@@ -11,7 +11,7 @@ export const CalendarView = () => {
   const { user } = useAuthStore();
   const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
   const { openDateModal } = useUiStore();
-  const { activeGroup, setCurrentPermissions, subscribedMembers } = useGroupsStore();
+  const { activeGroup, loadCurrentPermissions, subscribedMembers, currentRoles } = useGroupsStore();
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week')
 
   const eventStyleGetter = ( event, start, end, isSelected ) => {
@@ -42,14 +42,32 @@ export const CalendarView = () => {
     setLastView( event );
   }
 
-  useEffect(() => {
-    console.log(activeGroup.id);
+  useEffect( () => {
     
-    startLoadingEvents();
-    setCurrentPermissions( activeGroup.id );
+
+  },[])
+
+
+  useEffect(() => {
+
+    loadCurrentPermissions();
+    console.log(activeGroup);
+    
+    console.log("currentRoles useeffect", currentRoles);
+    
+
+    
     console.log(subscribedMembers);
+    console.log("activos");
+    
     
   }, [activeGroup])
+  
+  useEffect(() => {
+      if(currentRoles.length === 0) return;
+     startLoadingEvents();
+    
+  }, [currentRoles])
   
 
 
@@ -69,6 +87,7 @@ export const CalendarView = () => {
       event: CalendarEventBox
     }}
     onDoubleClickEvent={ onDoubleClick }
+    
     onSelectEvent={ onSelect }
     onView={ onViewChanged }
     

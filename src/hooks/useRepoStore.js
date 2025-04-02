@@ -22,19 +22,23 @@ export const useRepoStore = () => {
         dispatch( onSetSelectedFile( file ) );
     }
 
-    const uploadFile = async( file ) => {
-        console.log( file );
+    const uploadFile = async( content ) => {
+        const { userId, groupId, file  } = content;
+        
+        const formData = new FormData();
+        formData.append("file", file );
+        
+        //console.log(file);
         
 
         try {
-            // const { data } = await calendarApi.post(`/files/upload`, formData, {
-            //     params: { file.userId, file.groupId },
-            //     headers: { 'Content-Type': 'multipart/form-data' }
-            //  });
-
-            //Condicion para evitar agregar otro elemento a la lista (sobrescribir el archivo)
-            dispatch( onAddFile( file ) );
-            //dispatch( onAddFile( data ) );
+             const { data } = await calendarApi.post(`/files/upload`, formData, {
+                 params: { user: userId, group: groupId },
+                 headers: { 'Content-Type': 'multipart/form-data' }
+              });
+              //console.log( data );
+              
+            dispatch( onAddFile( data ) );
             
             
         } catch (error) {
@@ -45,7 +49,7 @@ export const useRepoStore = () => {
 
     const deleteFile = async( idFile ) => {
         try {
-            //await calendarApi.delete(`/files/${ idFile }/delete`);
+            await calendarApi.delete(`/files/${ idFile }/delete`);
                      
             dispatch( onDeleteFile({ id: idFile }));
 
@@ -57,25 +61,31 @@ export const useRepoStore = () => {
     const loadFiles = async() => {
         
         try {
-            //const { data } = await calendarApi.get(`/files`, null, { params: { group: activeGroup.id } });
             
-            //dispatch( onLoadFiles( data ) );
+            const { data } = await calendarApi.get(`/files`, { params: { group: activeGroup.id } });
+
+            //console.log(data);
+        
+            dispatch( onLoadFiles( data ) );
 
         } catch (error) {
             console.log(error);
         }
     }
 
-    const downloadFile = async( idFile ) => {
+    const downloadFile = async( file ) => {
         try {
-            const { data, headers } = await calendarApi.get(`/files/${ idFile }/download`, { responseType: 'blob' });
+            const { data, headers } = await calendarApi.get(`/files/${ file.id }/download`, { responseType: 'blob' });
 
+            //console.log( data, headers );
+            const type = file.name.split('.');
+            
             const fileName = headers['content-disposition']?.split('filename=')[1]  || 'descarga';
-
+            
             const url = window.URL.createObjectURL( new Blob([  data /*data.name*/ ]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', fileName );
+            link.setAttribute('download', `${fileName}.${type[type.length -1]}`);
             document.body.appendChild(link);
             link.click();
 
@@ -100,7 +110,6 @@ export const useRepoStore = () => {
         deleteFile,
         loadFiles,
         downloadFile
-
 
     }
 }
