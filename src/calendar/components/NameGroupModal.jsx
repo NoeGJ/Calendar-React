@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
 import { useGroupsStore, useNameGroupStore } from "../../hooks";
 
@@ -16,7 +16,7 @@ const customStyles = {
 export const NameGroupModal = () => {
 
     const { isOpenModalName, closeModalName } = useNameGroupStore();
-    const { startCreatingGroup } = useGroupsStore();
+    const { startCreatingGroup, activeGroup } = useGroupsStore();
     
     const [nameGroup, setNameGroup] = useState('')
     const [submitted, setSubmitted] = useState(false)
@@ -43,8 +43,16 @@ export const NameGroupModal = () => {
       await startCreatingGroup( nameGroup );
 
       closeModalName();
+      setNameGroup("");
       setSubmitted(false);
     }
+
+    useEffect(() => {
+        if( activeGroup != null ){
+          setNameGroup( activeGroup.name );
+        }
+    }, [activeGroup])
+    
 
   return (
     <Modal

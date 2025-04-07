@@ -52,21 +52,18 @@ export const CalendarView = () => {
   useEffect(() => {
 
     loadCurrentPermissions();
-    console.log(activeGroup);
-    
+
     console.log("currentRoles useeffect", currentRoles);
     
-
-    
-    console.log(subscribedMembers);
-    console.log("activos");
-    
+    console.log(subscribedMembers);    
     
   }, [activeGroup])
   
   useEffect(() => {
       if(currentRoles.length === 0) return;
      startLoadingEvents();
+
+     
     
   }, [currentRoles])
   

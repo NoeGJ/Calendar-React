@@ -7,7 +7,7 @@ export const CalendarEventBox = ({ event }) => {
     return (
     <>
       <strong>{ title }</strong>
-      <span> - { creator?.username }</span>
+      {/* <span> - { creator?.username }</span> */}
     </>
   )
 }

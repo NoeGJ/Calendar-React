@@ -28,6 +28,8 @@ export const useCalendarStore = () => {
         try {
             const { activities, ...event } = calendarEvent
 
+            console.log( event );
+
             if( calendarEvent.id ){
                 //updating
 
@@ -70,11 +72,8 @@ export const useCalendarStore = () => {
     }
 
     const startLoadingEvents = async() => {
-        console.log("startload: ", currentRoles);
         
         const res = checkRole( currentRoles, getRolesList().LecturaEventos );
-        console.log("res", res);
-        
 
         if(!res){
             Swal.fire("No tienes permisos", "Contacta con el administrador");

@@ -1,219 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-
-// const tempGroups = [
-//     {
-//       id: 1,
-//       name: 'proyecto',
-//       members: [
-//         {
-//           id: 1,
-//           name: 'Antonio'
-//         },
-//         {
-//           id: 2,
-//           name: 'Juan'
-//         }
-//       ],
-//       author: 1
-//   },
-//   {
-//     id: 2,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 3,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 4,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 5,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 6,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 7,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 8,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 9,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 10,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 11,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Antonio'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 12,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Angel'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 13,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Angie'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   },
-//   {
-//     id: 14,
-//     name: 'AdminBank',
-//     members: [
-//       {
-//         id: 1,
-//         name: 'Luis'
-//       },
-//       {
-//         id: 2,
-//         name: 'Juan'
-//       }
-//     ],
-//     author: 2
-//   }
-// ];
-
 export const groupsSlice = createSlice({
     name: 'groups',
     initialState: {
@@ -252,10 +38,11 @@ export const groupsSlice = createSlice({
 
                 return group;
             } );
+            state.activeGroup = null;
         },
         onDeleteGroup: ( state, { payload } ) => {
             
-            state.groups = state.groups.filter( group => group.id !== payload.id );
+            state.groups = state.groups.filter( group => group.id !== payload );
             state.activeGroup = null;
             
         },
@@ -285,7 +72,8 @@ export const groupsSlice = createSlice({
             state.subscribedMembers.push( payload )
         },
         onDeleteMember: ( state, { payload }) => {
-
+            state.subscribedMembers = state.subscribedMembers.filter(member => member.uid != payload);
+            
         },
         onDeleteUnsubscribed: ( state, { payload } ) => {
             state.unsubscribedMembers = state.unsubscribedMembers.filter( member => member.uid != payload.uid );

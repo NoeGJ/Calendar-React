@@ -7,7 +7,10 @@ import {
     onLoadunsubscribed, 
     onAddNewMember, 
     onLoadsubscribedMembers,
-    onDeleteUnsubscribed
+    onDeleteUnsubscribed,
+    onDeleteMember,
+    onUpdateGroup,
+    onDeleteGroup
 } from '../store/groups/groupsSlice';
 import { calendarApi } from "../api";
 
@@ -51,8 +54,24 @@ export const useGroupsStore = () => {
     }
 
     const startCreatingGroup = async ( groupName ) => {
+        
+        
         try {
+
+            if( activeGroup?.id ){
+                console.log("update");
+                
+                const { data } = await calendarApi.put(`/groups/${ activeGroup.id }`, { name: groupName });
+                
+                dispatch( onUpdateGroup( data ) );
+                return;
+            }
+            
+            console.log("create");
             const { data } = await calendarApi.post('/groups', { name: groupName  });
+
+            console.log(data);
+            
             
             dispatch( onAddNewGroup({ ...data, creatorId: user.uid  }) );
             
@@ -74,6 +93,31 @@ export const useGroupsStore = () => {
         } catch (error) {
             console.log('Error al cargar los grupos');
             console.log(error);       
+        }
+    }
+
+    // descontinuado
+    const editGroup = async ( groupId ) => {
+        try {
+            const { data } = await calendarApi.put(`/groups/${ groupId }`);
+            console.log(data);
+
+            //dispatch( onUpdateGroup( data ) );
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+    const deleteGroup = async( groupId ) => {
+        try {
+            await calendarApi.delete(`/groups/${ groupId }`);
+
+            dispatch( onDeleteGroup( groupId ) );
+        } catch (error) {
+            console.log(error);
+            
         }
     }
 
@@ -107,6 +151,45 @@ export const useGroupsStore = () => {
         
     }
 
+    const addRole = async( memberId, roleId ) => {
+        try {
+            console.log(memberId, roleId);
+            
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-role/${ memberId }`,null, { params: { roleId: roleId } });
+            console.log( data );
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+    const deleteRole = async( memberId, roleId ) => {
+        try {
+            console.log(memberId, roleId);
+            
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/delete-role/${ memberId }`, null, { params: { roleId } });
+            console.log( data );
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+    const kickMember = async( memberId ) => {
+         
+        try {
+            await calendarApi.post(`/groups/${ activeGroup.id }/kick-member`, null, { params: { memberId  } })
+            
+            dispatch( onDeleteMember( memberId ) );
+
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
 
     return {
         groups,
@@ -119,11 +202,17 @@ export const useGroupsStore = () => {
         loadCurrentPermissions,
         startCreatingGroup,
         startLoadingGroups,
+        editGroup,
+        deleteGroup,
         startAddNewMember,
         
         loadUnsubscribed,
         unsubscribedMembers,
-        subscribedMembers
+        subscribedMembers,
+
+        addRole,
+        deleteRole,
+        kickMember
     }
 
 }

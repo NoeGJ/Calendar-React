@@ -105,8 +105,13 @@ export const CalendarModal = () => {
     if( formValues.title.length <= 0) return;
 
     if ( category.length <= 0 ) return;
+
+    if ( selectedPriority == null ) return;
+
+
+    const priorityNumber = getPrioList()[selectedPriority]
     
-    await startSavingEvent({ ...formValues, activities: activities, category, selectedPriority });
+    await startSavingEvent({ ...formValues, activities: activities, category, priority: priorityNumber });
 
     closeDateModal();
     setFormSubmitted(false);
@@ -150,6 +155,7 @@ export const CalendarModal = () => {
   // Prioridades
 
   const handleSelectPriority = ( value) => {
+    
     setSelectedPriority( value );
   }
 
@@ -162,7 +168,7 @@ export const CalendarModal = () => {
       overlayClassName="modal-fondo"
       closeTimeoutMS={200}
     >
-      <div className="d-block justify-content-between align-content-center">
+      <div className="justify-content-between align-content-center">
       <h1> {formValues.title != "" ? formValues.title : 'Nuevo evento'} </h1>
       <Dropdown>
         <Dropdown.Toggle variant="primary" className="position-relative">
