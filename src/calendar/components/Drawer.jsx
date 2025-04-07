@@ -24,8 +24,14 @@ export const Drawer = () => {
 
 
   const handleSelectGroup = (group, index) => {
+    
+    if (group == activeGroup) return;
+    
+    console.log("navbar", group);
+    
+    changeView({ type: 'calendar', view: 1 })
 
-    changeView({ type: 'calendar', view: 1, group })
+    setActiveGroup( group );
     
     // if (group != activeGroup )
     //       resetEvents();
@@ -43,7 +49,7 @@ const handleHomeBtn = () => {
 
     changeView({ type: 'unselected', view: 0 });
     // resetEvents();  
-    // setActiveGroup( null );
+    setActiveGroup( null );
     // setActiveEvent( null );
     closeDrawer();
     }

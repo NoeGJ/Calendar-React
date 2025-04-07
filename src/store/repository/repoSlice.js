@@ -49,7 +49,7 @@ export const repoSlice = createSlice({
     name: 'repo',
     initialState: {        
         isLoadingFiles: true,
-        files: data,
+        files: [],
         isUploadingFile: false,
         selectedFile: null
         },

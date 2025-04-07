@@ -24,6 +24,7 @@ export const MembersModal = () => {
     const { isOpenModalMembers, closeModalMembers } = useMembersModal();
     const { currentPermissions, startAddNewMember, loadUnsubscribed, unsubscribedMembers, activeGroup, subscribedMembers } = useGroupsStore();
 
+
     const { grupo, can } = currentPermissions;
     
     const [email, setEmail] = useState('')
@@ -35,9 +36,10 @@ export const MembersModal = () => {
         loadUnsubscribed();
         //console.log(" DSAD",unsubscribedMembers);
         //console.log(currentPermissions);
+        console.log(" dsadad");
         
         
-    }, [subscribedMembers])
+    }, [])
     
 
     const handleInputChanged = ({ target }) => {
@@ -57,7 +59,11 @@ export const MembersModal = () => {
         )
         if (!newUser) return;
 
+        setEmail('');
+        
         await startAddNewMember( newUser );
+
+
         //disabled={  grupo?.creatorId == grupo?.members.uid ? false : true  }
     }
 
@@ -71,7 +77,7 @@ export const MembersModal = () => {
     style={ customStyles }
     >
         
-        <h5>Compartir "{ grupo?.name }"</h5>
+        <h5>Compartir { grupo?.name }</h5>
         
         <hr/>
         <form className="container" onSubmit={ onSubmit }>
@@ -113,6 +119,14 @@ export const MembersModal = () => {
                             { member.currentRoles.some( role => role.id == 1 ) ? 'Creador' : 'Miembro'  }
                         </Dropdown.Toggle>
                         
+                        <Dropdown.Menu>
+                            {Object.entries(currentPermissions).map( ([keys, value], index) => (
+                            
+                            <Dropdown.Item key={index}><input type='checkbox' checked={ value } /> { keys } </Dropdown.Item>
+
+                            ))
+                            }
+                        </Dropdown.Menu>
                     </Dropdown>
                     </div>
                     </div>

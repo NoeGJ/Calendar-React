@@ -1,5 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
-import { onAddNewGroup, onSetActiveGroup, onSetCurrentPermissions, onLoadGroups, onLoadunsubscribed, onAddNewMember, onLoadsubscribedMembers } from '../store/groups/groupsSlice';
+import { 
+    onAddNewGroup, 
+    onSetActiveGroup, 
+    onSetCurrentPermissions, 
+    onLoadGroups, 
+    onLoadunsubscribed, 
+    onAddNewMember, 
+    onLoadsubscribedMembers,
+    onDeleteUnsubscribed
+} from '../store/groups/groupsSlice';
 import { calendarApi } from "../api";
 
 export const useGroupsStore = () => {
@@ -9,6 +18,7 @@ export const useGroupsStore = () => {
     const { groups, 
         activeGroup,
         currentPermissions,
+        currentRoles,
         unsubscribedMembers,
         subscribedMembers
     } = useSelector( state => state.groups );
@@ -16,13 +26,23 @@ export const useGroupsStore = () => {
 
     const setActiveGroup = ( group ) => {
         dispatch( onSetActiveGroup( group ) );
+        
     }
 
-    const setCurrentPermissions = async( groupId ) => {
+    const loadCurrentPermissions = async() => {
         try {
-            const { data } = await calendarApi.get(`/groups/${ groupId }`);
+            const { data } = await calendarApi.get(`/groups/${ activeGroup.id }`);
 
-            dispatch( onSetCurrentPermissions( data ) );
+            //console.log( data );
+            
+
+            const {  can, grupo } = data;
+
+            const myRoles = grupo?.members.find( member => member.uid == user.uid );
+            console.log( myRoles );
+            
+
+            dispatch( onSetCurrentPermissions( { can, roles: myRoles.currentRoles  } ) );
 
         } catch (error) {
             console.log(error);
@@ -46,10 +66,9 @@ export const useGroupsStore = () => {
         try {
             const { data } = await calendarApi.get('/users/logged');
             console.log( data );
-            const groupsSlice = data.groups.slice(1)
-            //console.log( groupsSlice );
+
             
-            dispatch( onLoadGroups( groupsSlice ));
+            dispatch( onLoadGroups( data.groups ));
 
             
         } catch (error) {
@@ -61,8 +80,13 @@ export const useGroupsStore = () => {
     const startAddNewMember = async (  newMember ) => {
         try {
             
-            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`, null, { params: { newMember: newMember.uid }});
-            dispatch( onAddNewMember( newMember ) );
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`,null, { params: { newMember: newMember.uid }});
+            console.log( data );
+            
+            
+            dispatch( onAddNewMember( data ) );
+
+            dispatch( onDeleteUnsubscribed( data ) );
             
         } catch (error) {
             console.log(error);
@@ -84,16 +108,15 @@ export const useGroupsStore = () => {
     }
 
 
-
-
     return {
         groups,
         activeGroup,
         currentPermissions,
+        currentRoles,
         hasGroupSelected: !!activeGroup,
 
         setActiveGroup,
-        setCurrentPermissions,
+        loadCurrentPermissions,
         startCreatingGroup,
         startLoadingGroups,
         startAddNewMember,

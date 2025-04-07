@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { onAddNewEvent, onDeleteEvent, onLoadEvents, onResetEvents, onSetActiveEvent, onUpdateEvent } from "../store";
 import { calendarApi } from "../api";
-import { convertEventsToDateEvents } from "../helpers";
+import { checkRole, convertEventsToDateEvents, getRolesList } from "../helpers";
 import Swal from "sweetalert2";
 
 export const useCalendarStore = () => {
@@ -14,7 +14,9 @@ export const useCalendarStore = () => {
     } = useSelector( state => state.calendar );
     const { user } = useSelector( state => state.auth );
     const {
-        activeGroup
+        activeGroup,
+        currentRoles,
+        currentPermissions
     } = useSelector( state => state.groups );
 
     const setActiveEvent = ( calendarEvent ) => {
@@ -68,7 +70,18 @@ export const useCalendarStore = () => {
     }
 
     const startLoadingEvents = async() => {
+        console.log("startload: ", currentRoles);
+        
+        const res = checkRole( currentRoles, getRolesList().LecturaEventos );
+        console.log("res", res);
+        
+
+        if(!res){
+            Swal.fire("No tienes permisos", "Contacta con el administrador");
+        }
+        
         try {
+            
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/events`);
             
             const events = convertEventsToDateEvents( data );
