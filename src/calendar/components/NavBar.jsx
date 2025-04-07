@@ -75,12 +75,12 @@ export const NavBar = () => {
 
 
         <div className="d-flex justify-content-end">
-          {
+          {/* {
             !hasGroupSelected &&
             <button className="btn btn-dark  mr-3">
               <i class="fa-solid fa-plus"></i>
             </button>
-          }
+          } */}
           <button 
           className="btn btn-outline-danger"
           onClick={ startLogout }

@@ -35,22 +35,22 @@ export const MembersModal = () => {
     const { user } = useAuthStore();
 
     useEffect(() => {
+        
         loadUnsubscribed();
-        //console.log(" DSAD",unsubscribedMembers);
-        //console.log(currentPermissions);
+
+        console.log(currentPermissions);
         
         
         
     }, [])
-    
+
+
+        
 
     const handleInputChanged = ({ target }) => {
         setEmail( target.value );
     }
 
-    const showRolesString = ( permissions ) => {
-        
-    }
 
     const onSubmit = async ( event ) => {
         event.preventDefault();
@@ -66,8 +66,6 @@ export const MembersModal = () => {
         
         await startAddNewMember( newUser );
 
-
-        //disabled={  grupo?.creatorId == grupo?.members.uid ? false : true  }
     }
 
     const handleToggleRole = async ({ target }, memberId, roleId ) => {
@@ -82,7 +80,7 @@ export const MembersModal = () => {
             await addRole( memberId, roleId )
 
         }
-        //subscribedMembers
+
     }
 
     const handleDeleteMember = async( memberId ) => {
@@ -152,11 +150,12 @@ export const MembersModal = () => {
                             { member.currentRoles.some( role => role.id == 1 ) ? 'Creador' : 'Permisos'  }
                         </Dropdown.Toggle>
                         
-                        <Dropdown.Menu>
+                        <Dropdown.Menu className="form-check" as="div">
                             {Object.entries(getRolesList()).map( ([keys, value], index) => (
                             value != 1 && (
-                                <Dropdown.Item key={index}>
+                                <Dropdown.Item key={index} >
                                     <input 
+                                    className="form-check-input"
                                     type='checkbox' 
                                     checked={ member.currentRoles.some(role => role.id == value) } 
                                     onChange={ (event) => handleToggleRole( event, member.uid, value ) }

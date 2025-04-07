@@ -1,29 +1,30 @@
-import { useAuthStore, useDrawerStore, useGroupsStore, useCalendarStore, useViewStore } from "../../hooks";
+import { useAuthStore, useDrawerStore, useGroupsStore, useCalendarStore, useViewStore, useNameGroupStore } from "../../hooks";
 
 import {
   Dropdown
 } from 'react-bootstrap'
 import { useEffect, useState } from "react";
+import { checkRole, getRolesList } from "../../helpers";
+import { NameGroupModal } from "./NameGroupModal";
 
 export const Drawer = () => {
   
     const { closeDrawer, isOpenDrawer } = useDrawerStore();
 
     const { startLogout, user } = useAuthStore();
-    const { setActiveGroup, hasGroupSelected, groups, activeGroup } = useGroupsStore();
+    const { setActiveGroup, hasGroupSelected, groups, activeGroup, currentRoles, deleteGroup } = useGroupsStore();
+    const { openModalName } = useNameGroupStore();
     const { setActiveEvent, resetEvents } = useCalendarStore();
     const { changeView } = useViewStore();
 
     const [isOpen, setIsOpen] = useState(true);
 
-    const handlebtnClose = () => {
-        console.log(isOpenDrawer);
-        
+    const handlebtnClose = () => {        
         closeDrawer();
     }
 
 
-  const handleSelectGroup = (group, index) => {
+  const handleSelectGroup = ( group ) => {
     
     if (group == activeGroup) return;
     
@@ -53,8 +54,26 @@ const handleHomeBtn = () => {
     // setActiveEvent( null );
     closeDrawer();
     }
+
+    const handleEdit = async( group ) =>{
+
+      setActiveGroup( group );
+        
+      openModalName()
+
+      changeView({ type: 'unselected', view: 0 });
+      closeDrawer();
+    }
+
+    const handleDelete = async( groupId ) =>{
+      await deleteGroup( groupId );
+
+      changeView({ type: 'unselected', view: 0 });
+      closeDrawer();
+    }
   
     return (   
+      <>
       <div className={`bg-dark drawerito ${ isOpenDrawer? 'open' : 'close' }`}>
         <div className="d-flex align-items-center justify-content-between px-2" >
           <div className="d-flex align-items-center gap-2">
@@ -84,19 +103,23 @@ const handleHomeBtn = () => {
                   transition: "max-height 0.3s ease-in-out" }}>
             <ul className="list-group list-group-flush w-100">
               {groups.map((group, index) => (
-                <li className={`list-group-item list-group-item-action list-group-item-dark d-flex align-items-center justify-content-between`}  key={index} >
-                <span style={{ cursor: 'pointer', flexGrow: 1, fontWeight: 'normal', width: 'auto', display: 'inline-block'}} onClick={ () => handleSelectGroup(group, index) }>
-                  { group.name }
+                <li className={`list-group-item list-group-item-action list-group-item-dark d-flex align-items-center justify-content-between`}  key={index} title={ group.name }>
+                <span  style={{ cursor: 'pointer', flexGrow: 1, fontWeight: 'normal', width: 'auto', display: 'inline-block'}} onClick={ () => handleSelectGroup(group, index) }>
+                  { group.name.length > 20 ? group.name.slice(0, 17) + '...' : group.name } -
+                <sub> { group.creatorId == user.uid ? 'Propio': 'Miembro' }</sub>
                 </span>
-                <Dropdown className="hidden-btn" style={{ display: 'inline-block', width: 'auto', height: '100%'}}>
+                {group.creatorId == user.uid &&
+                <Dropdown className="hidden-btn" style={{ display: 'inline-block', width: 'auto', height: '100%'}} >
                   <Dropdown.Toggle id="dropdown-drawer">
                     <i className="fa-solid fa-ellipsis" />
                   </Dropdown.Toggle>
                   
-                  <Dropdown.Menu>
-                    <Dropdown.Item>Eliminar</Dropdown.Item>
+                  <Dropdown.Menu className="position-fixed">
+                    <Dropdown.Item onClick={ () => handleEdit( group ) }>editar</Dropdown.Item>
+                    <Dropdown.Item onClick={ () => handleDelete( group.id ) } >Eliminar</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
+                }
                 </li>
               ))
               }
@@ -106,5 +129,9 @@ const handleHomeBtn = () => {
 
         </div>
       </div>
+      { activeGroup != null &&
+      <NameGroupModal />
+      }
+      </>
   );
 };

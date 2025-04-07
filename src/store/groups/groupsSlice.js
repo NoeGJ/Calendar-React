@@ -38,10 +38,11 @@ export const groupsSlice = createSlice({
 
                 return group;
             } );
+            state.activeGroup = null;
         },
         onDeleteGroup: ( state, { payload } ) => {
             
-            state.groups = state.groups.filter( group => group.id !== payload.id );
+            state.groups = state.groups.filter( group => group.id !== payload );
             state.activeGroup = null;
             
         },
@@ -75,7 +76,8 @@ export const groupsSlice = createSlice({
             state.subscribedMembers.push( payload )
         },
         onDeleteMember: ( state, { payload }) => {
-
+            state.subscribedMembers = state.subscribedMembers.filter(member => member.uid != payload);
+            
         },
         onDeleteUnsubscribed: ( state, { payload } ) => {
             state.unsubscribedMembers = state.unsubscribedMembers.filter( member => member.uid != payload.uid );

@@ -1,13 +1,15 @@
 import { useState } from "react"
-import { useGroupsStore, useNameGroupStore, useViewStore } from "../../hooks"
+import { useAuthStore, useGroupsStore, useNameGroupStore, useViewStore } from "../../hooks"
 import { NameGroupModal } from "../components/NameGroupModal";
+import { Dropdown } from "react-bootstrap";
 
 
 
 
 export const UnselectedGroup = () => {
 
-    const { groups, setActiveGroup } = useGroupsStore();
+    const { user } = useAuthStore();
+    const { groups, setActiveGroup, deleteGroup } = useGroupsStore();
     //const [groups, setGroups] = useState([])
     const { openModalName, isOpenModalName } = useNameGroupStore();
     const { changeView } = useViewStore();
@@ -22,6 +24,18 @@ export const UnselectedGroup = () => {
     const handleNewGroup = () => {
         openModalName();
          
+    }
+
+    const handleEdit = ( group ) => {
+        setActiveGroup( group );
+          
+        openModalName()
+  
+    }
+
+    const handleDelete = async ( groupId ) => {
+        await deleteGroup( groupId );
+  
     }
 
     return (
@@ -44,9 +58,21 @@ export const UnselectedGroup = () => {
                     return(
                         <div className="col-md-4 " key={index}>
                             <div className={`card text-white col m-2  shadow-lg ${ color }`}>
-                                <button className=" btn position-absolute top-0 m-2 text-light" style={{ top: -10, right: -10 }}>
+                                {group.creatorId == user.uid &&
+                                <Dropdown className="btn position-absolute top-0 m-2 text-light" style={{ display: 'inline-block', width: 'auto', height: '100%', top: -10, right: -10}} >
+                                    <Dropdown.Toggle id="dropdown-drawer">
+                                    <i className="fa-solid fa-ellipsis" />
+                                    </Dropdown.Toggle>
+                                    
+                                    <Dropdown.Menu className="position-fixed">
+                                    <Dropdown.Item onClick={ () => handleEdit( group ) }>editar</Dropdown.Item>
+                                    <Dropdown.Item onClick={ () => handleDelete( group.id ) } >Eliminar</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                                }
+                                {/* <button className=" btn position-absolute top-0 m-2 text-light" style={{ top: -10, right: -10 }}>
                                 <i className="fa-solid fa-ellipsis" />
-                                </button>
+                                </button> */}
                                 <div className="card-body justify-content-center align-items-center" style={{ cursor: 'pointer' }} onClick={ () => handleSelectGroup(group, index ) }>
                                     <h5 className="card-title">{group.name}</h5>
                                     <br/>
