@@ -6,6 +6,8 @@ import {
   } from 'react-bootstrap'
 
 import { useAuthStore, useGroupsStore, useMembersModal } from "../../hooks";
+import { checkRole, getRolesList } from "../../helpers";
+import Swal from "sweetalert2";
 
 const customStyles = {
     content: {
@@ -22,13 +24,13 @@ const customStyles = {
 export const MembersModal = () => {
 
     const { isOpenModalMembers, closeModalMembers } = useMembersModal();
-    const { currentPermissions, startAddNewMember, loadUnsubscribed, unsubscribedMembers, activeGroup, subscribedMembers } = useGroupsStore();
+    const { currentPermissions, startAddNewMember, loadUnsubscribed, unsubscribedMembers, currentRoles, subscribedMembers, addRole, deleteRole, kickMember } = useGroupsStore();
 
 
     const { grupo, can } = currentPermissions;
     
     const [email, setEmail] = useState('')
-    const [unsubscribed, setUnsubscribed] = useState([])
+    //const [selectedRoles, setSelectedRoles] = useState([])
 
     const { user } = useAuthStore();
 
@@ -36,7 +38,7 @@ export const MembersModal = () => {
         loadUnsubscribed();
         //console.log(" DSAD",unsubscribedMembers);
         //console.log(currentPermissions);
-        console.log(" dsadad");
+        
         
         
     }, [])
@@ -67,6 +69,36 @@ export const MembersModal = () => {
 
         //disabled={  grupo?.creatorId == grupo?.members.uid ? false : true  }
     }
+
+    const handleToggleRole = async ({ target }, memberId, roleId ) => {
+        if(!target.checked) {
+            console.log("eliminar");
+            
+            
+            await deleteRole( memberId, roleId );
+            
+        } else{
+            console.log("agregar");
+            await addRole( memberId, roleId )
+
+        }
+        //subscribedMembers
+    }
+
+    const handleDeleteMember = async( memberId ) => {
+        Swal.fire({
+            text: "Seguro que quieres expulsar al usuario",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar"
+        }).then( ({ isConfirmed }) => {
+            if(!isConfirmed) return;
+            
+            kickMember( memberId );
+        }
+    )
+    
+    }
+
 
   return (
     <Modal
@@ -114,21 +146,31 @@ export const MembersModal = () => {
                         <div className="">{ member.username } { member.uid == user.uid ? '(Tú)': '' }</div>
                             <sub className="position-relative text-muted" style={{ top: -10 }}>{ member.email }</sub>
                         </div>
-                    <div className="">
+                    <div className="d-flex">
                     <Dropdown   drop="end" >
-                        <Dropdown.Toggle variant="primary"  id="dropdown-basic" style={{ width: '100px' }} disabled>
-                            { member.currentRoles.some( role => role.id == 1 ) ? 'Creador' : 'Miembro'  }
+                        <Dropdown.Toggle variant="primary"  id="dropdown-basic" style={{ width: '100px' }} disabled={ member.currentRoles.some( role => role.id == 1 ) }>
+                            { member.currentRoles.some( role => role.id == 1 ) ? 'Creador' : 'Permisos'  }
                         </Dropdown.Toggle>
                         
                         <Dropdown.Menu>
-                            {Object.entries(currentPermissions).map( ([keys, value], index) => (
-                            
-                            <Dropdown.Item key={index}><input type='checkbox' checked={ value } /> { keys } </Dropdown.Item>
-
-                            ))
+                            {Object.entries(getRolesList()).map( ([keys, value], index) => (
+                            value != 1 && (
+                                <Dropdown.Item key={index}>
+                                    <input 
+                                    type='checkbox' 
+                                    checked={ member.currentRoles.some(role => role.id == value) } 
+                                    onChange={ (event) => handleToggleRole( event, member.uid, value ) }
+                                    /> { keys } 
+                                </Dropdown.Item>
+                            )))
                             }
                         </Dropdown.Menu>
                     </Dropdown>
+                    { !member.currentRoles.some( role => role.id == 1 ) &&
+                        <button className="btn ml-2" onClick={ () => handleDeleteMember( member.uid ) }>
+                            <i className="fa fa-close"></i>
+                        </button>
+                    }
                     </div>
                     </div>
 

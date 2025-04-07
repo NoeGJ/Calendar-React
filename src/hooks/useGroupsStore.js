@@ -108,6 +108,42 @@ export const useGroupsStore = () => {
         
     }
 
+    const addRole = async( memberId, roleId ) => {
+        try {
+            console.log(memberId, roleId);
+            
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-role/${ memberId }`,null, { params: { roleId: roleId } });
+            console.log( data );
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+    const deleteRole = async( memberId, roleId ) => {
+        try {
+            console.log(memberId, roleId);
+            
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/delete-role/${ memberId }`, null, { params: { roleId } });
+            console.log( data );
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+    const kickMember = async( memberId ) => {
+         
+        try {
+            await calendarApi.post(`/groups/${ activeGroup.id }/kick-member`, null, { params: { memberId  } })
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
 
     return {
         groups,
@@ -124,7 +160,11 @@ export const useGroupsStore = () => {
         
         loadUnsubscribed,
         unsubscribedMembers,
-        subscribedMembers
+        subscribedMembers,
+
+        addRole,
+        deleteRole,
+        kickMember
     }
 
 }
