@@ -70,7 +70,6 @@ export const useCalendarStore = () => {
     const startLoadingEvents = async() => {
         try {
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/events`);
-            console.log(data);
             
             const events = convertEventsToDateEvents( data );
             dispatch( onLoadEvents( events ) );

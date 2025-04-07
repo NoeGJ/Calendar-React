@@ -55,7 +55,6 @@ export const MembersModal = () => {
         const newUser = unsubscribedMembers.find( ( user ) => 
             email == user.email
         )
-        console.log( newUser );
         if (!newUser) return;
 
         await startAddNewMember( newUser );
@@ -114,14 +113,6 @@ export const MembersModal = () => {
                             { member.currentRoles.some( role => role.id == 1 ) ? 'Creador' : 'Miembro'  }
                         </Dropdown.Toggle>
                         
-                        <Dropdown.Menu>
-                            {Object.entries(can).map( ([keys, value], index) => (
-                            
-                            <Dropdown.Item key={index}><input type='checkbox' checked={ value } /> { keys } </Dropdown.Item>
-
-                            ))
-                            }
-                        </Dropdown.Menu>
                     </Dropdown>
                     </div>
                     </div>

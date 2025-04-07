@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "react-big-calendar";
-import { useAuthStore, useCalendarStore, useGroupsStore, useUiStore } from "../../hooks";
+import { useAuthStore, useCalendarStore, useGroupsStore, useEventModalStore } from "../../hooks";
 import { localizer, getMessagesES } from '../../helpers'
 
 import { CalendarModal, FabAddNew, FabDelete, CalendarEventBox, MembersModal } from '..';
@@ -10,7 +10,7 @@ export const CalendarView = () => {
 
   const { user } = useAuthStore();
   const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
-  const { openDateModal } = useUiStore();
+  const { openEventModal } = useEventModalStore();
   const { activeGroup, setCurrentPermissions, subscribedMembers } = useGroupsStore();
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week')
 
@@ -30,7 +30,7 @@ export const CalendarView = () => {
 
   }
   const onDoubleClick = ( event ) => {
-    openDateModal();
+    openEventModal();
   }
 
   const onSelect = ( event ) => {
@@ -43,7 +43,6 @@ export const CalendarView = () => {
   }
 
   useEffect(() => {
-    console.log(activeGroup.id);
     
     startLoadingEvents();
     setCurrentPermissions( activeGroup.id );

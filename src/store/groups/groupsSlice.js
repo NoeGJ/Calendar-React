@@ -254,10 +254,8 @@ export const groupsSlice = createSlice({
         },
         onLoadGroups: (state, { payload = [] }) => {
             state.isLoadingGroups = false;
-            console.log( payload );
             
             payload.forEach(group => {
-                console.log(group);
                 
                 const exists = state.groups.some( dbGroup => dbGroup.id === group.id );
                 if( !exists ){
@@ -271,10 +269,8 @@ export const groupsSlice = createSlice({
         },
         onLoadunsubscribed: ( state, { payload = [] } ) => {
             state.isLoadingMembers = false;
-            console.log(payload);
             
             state.unsubscribedMembers = payload;
-            console.log(state.unsubscribedMembers);
         },
 
         onAddNewMember: (state, { payload }) => {

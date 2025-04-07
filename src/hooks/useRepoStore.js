@@ -23,9 +23,6 @@ export const useRepoStore = () => {
     }
 
     const uploadFile = async( file ) => {
-        console.log( file );
-        
-
         try {
             // const { data } = await calendarApi.post(`/files/upload`, formData, {
             //     params: { file.userId, file.groupId },

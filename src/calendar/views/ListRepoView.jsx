@@ -33,10 +33,7 @@ const handleNewFile = () => {
 
 const handleChange = ( event ) => {
   const file = event.target.files[0]; // Asegúrate de tomar el primer archivo
-
-  console.log(file);
   
-
   transferData( file )
 
   //setSelectedFile();
