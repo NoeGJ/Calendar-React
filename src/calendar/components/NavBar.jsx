@@ -1,6 +1,8 @@
+import { Dropdown } from "react-bootstrap";
 import { checkRole, getRolesList, roleMessage } from "../../helpers";
-import { useAuthStore, useDrawerStore, useGroupsStore, useMembersModal, useViewStore } from "../../hooks"
-import { MembersModal } from "./MembersModal";
+import { useAuthStore, useDrawerStore, useGroupsStore, useMembersModal, useViewStore, useViewModalsStore } from "../../hooks"
+
+import { MembersModal, ListModal, PanelModal } from "../";
 
 
 export const NavBar = () => {
@@ -11,6 +13,7 @@ export const NavBar = () => {
   const { openModalMembers } = useMembersModal();
   const { changeView } = useViewStore();
   const { activeGroup, currentRoles } = useGroupsStore();
+  const {  openList, openPanel } = useViewModalsStore();
   
   
   const handleToggleDrawer = () => {
@@ -67,6 +70,17 @@ export const NavBar = () => {
             <i className="fa-solid fa-archive"></i>
             Repo
           </button>
+
+          <Dropdown  className="btn" style={{ display: 'inline-block', width: 'auto', height: '100%'}}>
+            <Dropdown.Toggle variant="secondary">
+              Vistas
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+            <Dropdown.Item onClick={() => openList() }> Lista </Dropdown.Item>
+            <Dropdown.Item onClick={() => openPanel() }> Panel </Dropdown.Item>
+          
+        </Dropdown.Menu>
+      </Dropdown>
           </>
         }
         </span>
@@ -95,6 +109,12 @@ export const NavBar = () => {
     {
       ( activeGroup != null && checkRole( currentRoles, getRolesList().Administrador )) &&
       <MembersModal />
+    }
+    { activeGroup != null &&
+    <>
+      <ListModal />
+      <PanelModal />
+      </>
     }
     </>
   )

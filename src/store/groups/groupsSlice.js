@@ -11,6 +11,7 @@ export const groupsSlice = createSlice({
         unsubscribedMembers: [],
         subscribedMembers: [],
         isLoadingMembers: true,
+        categories: [],
     },
     reducers: {
         onSetActiveGroup: (state, { payload }) => {
@@ -87,6 +88,11 @@ export const groupsSlice = createSlice({
             state.groups = []
             state.currentPermissions = {}
             state.activeGroup = null
+        },
+        assignCategories: ( state, {payload} ) => {
+            console.log( pay );
+            
+            state.categories = payload;
         }
     }
 });
@@ -105,6 +111,7 @@ export const {
     onLoadsubscribedMembers,
     onDeleteMember,
     onDeleteUnsubscribed,
+    assignCategories,
 
 
 } = groupsSlice.actions;

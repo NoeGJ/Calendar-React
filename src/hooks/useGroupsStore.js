@@ -10,7 +10,8 @@ import {
     onDeleteUnsubscribed,
     onDeleteMember,
     onUpdateGroup,
-    onDeleteGroup
+    onDeleteGroup,
+    assignCategories
 } from '../store/groups/groupsSlice';
 import { calendarApi } from "../api";
 
@@ -23,7 +24,8 @@ export const useGroupsStore = () => {
         currentPermissions,
         currentRoles,
         unsubscribedMembers,
-        subscribedMembers
+        subscribedMembers,
+        categories
     } = useSelector( state => state.groups );
     const { user } = useSelector( state => state.auth );
 
@@ -191,6 +193,19 @@ export const useGroupsStore = () => {
         }
     }
 
+    const loadCategories = async() => {
+        try {
+            
+            const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/categories`);
+            console.log( data );
+            dispatch( assignCategories( data ) );
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
 
     return {
         groups,
@@ -213,7 +228,9 @@ export const useGroupsStore = () => {
 
         addRole,
         deleteRole,
-        kickMember
+        kickMember,
+        loadCategories,
+        categories
     }
 
 }

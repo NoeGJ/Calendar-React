@@ -13,3 +13,6 @@ export * from './components/MembersModal';
 export * from './views/UnselectedGroup';
 export * from './views/CalendarView';
 export * from './views/ListRepoView';
+
+export * from './viewModals/ListModal';
+export * from './viewModals/PanelModal';

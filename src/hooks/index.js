@@ -9,3 +9,4 @@ export * from './useGroupsStore';
 export * from './useNameGroupStore';
 export * from './useMembersModal';
 export * from './useViewStore';
+export * from './useViewModalsStore';
