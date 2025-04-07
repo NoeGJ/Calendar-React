@@ -235,8 +235,8 @@ export const groupsSlice = createSlice({
             state.currentPermissions = payload.can;
             state.currentRoles = payload.roles;
 
-            console.log(" slice ",state.currentRoles);
-            console.log(state.currentPermissions);
+            //console.log(" slice ",state.currentRoles);
+            //console.log(state.currentPermissions);
             
         },
 
@@ -253,11 +253,11 @@ export const groupsSlice = createSlice({
                 return group;
             } );
         },
-        onDeleteGroup: ( state ) => {
-            if( state.activeGroup ){
-                state.groups = state.groups.filter( group => group.id !== state.activeGroup.id );
-                state.activeGroup = null;
-            }
+        onDeleteGroup: ( state, { payload } ) => {
+            
+            state.groups = state.groups.filter( group => group.id !== payload.id );
+            state.activeGroup = null;
+            
         },
         onLoadGroups: (state, { payload = [] }) => {
             state.isLoadingGroups = false;
@@ -284,9 +284,15 @@ export const groupsSlice = createSlice({
             console.log(state.unsubscribedMembers);
         },
 
-        onAddNewMember: (state, { payload }) => {
+        onAddNewMember: (state, { payload }) => {   
             
-            state.subscribedMembers.append( payload )
+            state.subscribedMembers.push( payload )
+        },
+        onDeleteMember: ( state, { payload }) => {
+
+        },
+        onDeleteUnsubscribed: ( state, { payload } ) => {
+            state.unsubscribedMembers = state.unsubscribedMembers.filter( member => member.uid != payload.uid );
         },
         onLogoutGroups: ( state ) => {
             //state.isLoadingGroups = true
@@ -308,5 +314,9 @@ export const {
     onAddNewMember,
 
     onLoadunsubscribed,
-    onLoadsubscribedMembers
+    onLoadsubscribedMembers,
+    onDeleteMember,
+    onDeleteUnsubscribed,
+
+
 } = groupsSlice.actions;

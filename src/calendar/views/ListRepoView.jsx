@@ -1,24 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useRepoStore } from "../../hooks/useRepoStore";
-import { checkRole, formatBytes, getRolesList } from "../../helpers";
+import { checkRole, formatBytes, getRolesList, roleMessage } from "../../helpers";
 import { format } from "date-fns";
 import { es } from 'date-fns/locale';
 import { useAuthStore, useGroupsStore } from "../../hooks";
-import { MembersModal } from "../components/MembersModal";
-import Swal from "sweetalert2";
 
 const LIMITE = 15000000;
-
 
 export const ListRepoView = () => {
 
 const imageRef = useRef();
-// const [selectedFile, setSelectedFile] = useState({
-//   name: '',
-//   fileType: '',
-//   size: 0,
-//   uploadedAt: new Date()
-// });
 
 const { files, downloadFile, deleteFile, uploadFile, loadFiles } = useRepoStore();
 const { activeGroup, currentRoles } = useGroupsStore();
@@ -38,13 +29,9 @@ const handleNewFile = () => {
 
 const handleChange = ( event ) => {
   const file = event.target.files[0];
-
-  //console.log(file);
   
   transferData( file )
 
-  //setSelectedFile();
-  
 }
 
 const transferData = async( file ) => {
@@ -52,14 +39,14 @@ const transferData = async( file ) => {
   const res = checkRole(currentRoles, getRolesList().Subida) 
   
   if(!res) {
-    Swal.fire("No tienes permisos", "Contacta con el administrador" ); 
+    roleMessage();
     return;
   }
   
   if (!file) return; 
 
   if (file.size >= LIMITE) {
-    Swal.fire("Limite Excedido", "El limite para subir archivos es de 15 MB");
+    roleMessage("Limite Excedido", "El limite para subir archivos es de 15 MB");
     return;
   }
 
@@ -78,14 +65,25 @@ const transferData = async( file ) => {
 }
 
 const handleDownload = ( file ) => {
+  const res =  checkRole( currentRoles, getRolesList().Descarga );
   
-  //console.log(file);
+  if(!res){
+    roleMessage();
+    return;
+  }
+
   downloadFile( file );
   
 }
 
 const handleDelete = ( file ) => {
-    deleteFile( file.id );
+  const res =  checkRole(currentRoles, getRolesList().Administrador);
+  
+  if(!res){
+    roleMessage();
+    return;
+  }
+  deleteFile( file.id );
 }
 
 const handleDrop = ( event ) => {
@@ -151,7 +149,7 @@ return (
       </tbody>
     </table>      
     </div>
-    <MembersModal />      
+    {/* <MembersModal />       */}
   </>
 )
 }

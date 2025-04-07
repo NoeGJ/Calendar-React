@@ -7,7 +7,11 @@ import { es } from 'date-fns/locale/es';
 import "react-datepicker/dist/react-datepicker.css";
 import { useCalendarStore, useUiStore } from "../../hooks";
 import { useEffect } from "react";
-import { getEnvVariables } from "../../helpers";
+import { getEnvVariables, getPrioList } from "../../helpers";
+
+import {
+  Dropdown
+} from 'react-bootstrap'
 
 registerLocale('es', es)
 
@@ -42,6 +46,8 @@ export const CalendarModal = () => {
   const [activities, setActivities] = useState([])
 
   const [activity, setActivity] = useState('')
+  const [category, setCategory] = useState('');
+  const [selectedPriority, setSelectedPriority] = useState(null)
 
   const titleClass = useMemo(() => {
     if( !formSubmitted ) return '';
@@ -97,11 +103,15 @@ export const CalendarModal = () => {
     }
 
     if( formValues.title.length <= 0) return;
+
+    if ( category.length <= 0 ) return;
     
-    await startSavingEvent({ ...formValues, activities: activities });
+    await startSavingEvent({ ...formValues, activities: activities, category, selectedPriority });
 
     closeDateModal();
     setFormSubmitted(false);
+    setCategory("");
+    setSelectedPriority("");
 
   }
 
@@ -131,6 +141,18 @@ export const CalendarModal = () => {
     ));
   }
 
+  // Categorias
+
+  const inputChangeCategory = ({ target }) => {
+    setCategory( target.value );
+  }
+
+  // Prioridades
+
+  const handleSelectPriority = ( value) => {
+    setSelectedPriority( value );
+  }
+
   return (
     <Modal
       isOpen={ isDateModalOpen }
@@ -140,7 +162,21 @@ export const CalendarModal = () => {
       overlayClassName="modal-fondo"
       closeTimeoutMS={200}
     >
+      <div className="d-block justify-content-between align-content-center">
       <h1> {formValues.title != "" ? formValues.title : 'Nuevo evento'} </h1>
+      <Dropdown>
+        <Dropdown.Toggle variant="primary" className="position-relative">
+          {selectedPriority ? `${selectedPriority}` : "Prioridad"}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {Object.entries(getPrioList()).map( ([label, value]) => (
+            <Dropdown.Item onClick={() => handleSelectPriority(label)} key={value}>{ label }</Dropdown.Item>
+          ))
+
+          }
+        </Dropdown.Menu>
+      </Dropdown>
+      </div>
       <hr />
       <form className="container" onSubmit={ onSubmit }>
         <div className="overflow-auto modal-container">
@@ -175,6 +211,23 @@ export const CalendarModal = () => {
         </div>
 
         <hr />
+        <div className="form-group mb-2">
+          <label>Categorización</label>
+          <input
+            type="text"
+            className={`form-control`}
+            placeholder="Categoria"
+            name="category"
+            autoComplete="off"
+            value={ category }
+            onChange={ inputChangeCategory }
+            
+          />
+          <small id="emailHelp" className="form-text text-muted">
+            Asigna una categoria al evento
+          </small>
+        </div>
+
         <div className="form-group mb-2">
           <label>Titulo y notas</label>
           <input

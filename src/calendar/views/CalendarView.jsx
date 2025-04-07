@@ -94,7 +94,7 @@ export const CalendarView = () => {
   />
 
 
-  <MembersModal />
+  {/* <MembersModal /> */}
   <CalendarModal />
   <FabAddNew />
   <FabDelete />

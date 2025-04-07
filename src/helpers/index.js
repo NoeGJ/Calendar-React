@@ -7,3 +7,5 @@ export * from './convertEventsToDateEvents';
 export * from './formatBytes';
 export * from './getRolesList';
 export * from './checkRole';
+export * from './roleMessage';
+export * from './getPrioList';

@@ -1,13 +1,11 @@
 
 
 export const checkRole = ( roleslist, RoleId ) => {
-    console.log(" sda",roleslist);
-    
+    const AUTHOR = 1
     
     const roles = Array.isArray(roleslist) ? roleslist : [];
     
-    const res = roles.some( (role) => role.id === RoleId );
-    console.log("CHECKROLE", res);
+    const res = roles.some( (role) => role.id === RoleId || role.id === AUTHOR);
 
     return res;
 }

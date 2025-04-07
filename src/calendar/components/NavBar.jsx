@@ -1,4 +1,6 @@
+import { checkRole, getRolesList, roleMessage } from "../../helpers";
 import { useAuthStore, useDrawerStore, useGroupsStore, useMembersModal, useViewStore } from "../../hooks"
+import { MembersModal } from "./MembersModal";
 
 
 export const NavBar = () => {
@@ -8,7 +10,7 @@ export const NavBar = () => {
   const { hasGroupSelected } = useGroupsStore();
   const { openModalMembers } = useMembersModal();
   const { changeView } = useViewStore();
-  const { activeGroup } = useGroupsStore();
+  const { activeGroup, currentRoles } = useGroupsStore();
   
   
   const handleToggleDrawer = () => {
@@ -18,6 +20,12 @@ export const NavBar = () => {
   };
 
   const handleMembersBtn = () => {
+    const res = checkRole( currentRoles, getRolesList().Administrador );
+    
+    if (!res) {
+      roleMessage();
+      return;
+    }
     openModalMembers();
   }
 
@@ -33,6 +41,7 @@ export const NavBar = () => {
   }
   
   return (
+    <>
     <div className="navbar navbar-dark bg-dark mb-4 px-4">
         
         <span className="navbar-brand">
@@ -83,5 +92,10 @@ export const NavBar = () => {
           </button>
         </div>
     </div>
+    {
+      ( activeGroup != null && checkRole( currentRoles, getRolesList().Administrador )) &&
+      <MembersModal />
+    }
+    </>
   )
 }

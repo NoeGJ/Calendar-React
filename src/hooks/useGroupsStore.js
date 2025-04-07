@@ -1,5 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
-import { onAddNewGroup, onSetActiveGroup, onSetCurrentPermissions, onLoadGroups, onLoadunsubscribed, onAddNewMember, onLoadsubscribedMembers } from '../store/groups/groupsSlice';
+import { 
+    onAddNewGroup, 
+    onSetActiveGroup, 
+    onSetCurrentPermissions, 
+    onLoadGroups, 
+    onLoadunsubscribed, 
+    onAddNewMember, 
+    onLoadsubscribedMembers,
+    onDeleteUnsubscribed
+} from '../store/groups/groupsSlice';
 import { calendarApi } from "../api";
 
 export const useGroupsStore = () => {
@@ -71,9 +80,13 @@ export const useGroupsStore = () => {
     const startAddNewMember = async (  newMember ) => {
         try {
             
-            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`, null, { params: { newMember: newMember.uid }});
-            console.log('addmember',data);
-            dispatch( onAddNewMember( newMember ) );
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`,null, { params: { newMember: newMember.uid }});
+            console.log( data );
+            
+            
+            dispatch( onAddNewMember( data ) );
+
+            dispatch( onDeleteUnsubscribed( data ) );
             
         } catch (error) {
             console.log(error);
@@ -94,8 +107,6 @@ export const useGroupsStore = () => {
         }
         
     }
-
-
 
 
     return {

@@ -60,7 +60,11 @@ export const MembersModal = () => {
         console.log( newUser );
         if (!newUser) return;
 
+        setEmail('');
+        
         await startAddNewMember( newUser );
+
+
         //disabled={  grupo?.creatorId == grupo?.members.uid ? false : true  }
     }
 
@@ -74,7 +78,7 @@ export const MembersModal = () => {
     style={ customStyles }
     >
         
-        <h5>Compartir "{ grupo?.name }"</h5>
+        <h5>Compartir { grupo?.name }</h5>
         
         <hr/>
         <form className="container" onSubmit={ onSubmit }>
