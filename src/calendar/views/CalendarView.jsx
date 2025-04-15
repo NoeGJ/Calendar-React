@@ -96,7 +96,6 @@ export const CalendarView = () => {
   <CalendarModal />
   <EventDetailsModal/>
   <FabAddNew />
-  <FabDelete />
   </>
   
 )

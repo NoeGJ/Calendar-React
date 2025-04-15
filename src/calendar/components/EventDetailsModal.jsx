@@ -28,7 +28,6 @@ export const EventDetailsModal = () => {
   const handleEdit = () => {
     openDateModal();    
     closeEventModal();
-
   };
 
   if (getEnvVariables().VITE_MODE !== "test") {
