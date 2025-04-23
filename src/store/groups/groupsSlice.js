@@ -90,7 +90,7 @@ export const groupsSlice = createSlice({
             state.activeGroup = null
         },
         assignCategories: ( state, {payload} ) => {
-            console.log( pay );
+            console.log( payload );
             
             state.categories = payload;
         }

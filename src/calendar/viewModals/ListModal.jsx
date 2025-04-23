@@ -23,7 +23,8 @@ export const ListModal = () => {
     useEffect(() => {
         if( activeGroup.length <= 0 ) return;
        loadCategories();
-    
+      console.log(
+       categories)
       
     }, [activeGroup])
     
@@ -43,16 +44,20 @@ export const ListModal = () => {
           <table style={{ width: "100%", backgroundColor: "#ddd" }}>
             <thead>
               <tr>
-                <th>EVENTO</th>
-                <th>Prioridad</th>
+                <th>Evento</th>
+                <th>Categorias</th>
               </tr>
             </thead>
             <tbody>
-              {categories?.map((item, index) => (
+              {events?.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.name}</td>
-                  {/* Aqui deberia de estar categorias pero el proyecto murio y las categorias la acompañaron */}
-                   <td>{item.id}</td> 
+                  <td>{item.title}</td>
+              {categories?.map( category => {
+                
+                <td>{category.id}</td> 
+
+              })
+              }
                 </tr>
               ))}
             </tbody>
