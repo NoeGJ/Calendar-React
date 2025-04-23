@@ -30,6 +30,7 @@ export const NavBar = () => {
   }
 
   const handleRepoBtn = () => {
+
     changeView({ type: 'repository', view: 2 });
   }
 

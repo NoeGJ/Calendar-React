@@ -19,7 +19,7 @@ export const CalendarView = () => {
     const isMyEvent = ( user.uid === event.creator?._uid ) || ( user.uid === event.creator?.uid );
 
     const style = {
-      backgroundColor: isMyEvent ? '#347CF7' : '#465660',
+      backgroundColor:  '#347CF7',
       borderRadius: '0px',
       opacity: 0.8,
       color: 'white',
@@ -53,9 +53,7 @@ export const CalendarView = () => {
 
     loadCurrentPermissions();
 
-    console.log("currentRoles useeffect", currentRoles);
-    
-    console.log(subscribedMembers);    
+
     
   }, [activeGroup])
   

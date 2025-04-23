@@ -1,10 +1,10 @@
 export const getPrioList = () => {
     return {
-        Opcional: 1,
-        Baja: 2,
-        Media: 3,
-        Alta: 4,
-        Urgente: 5,
-        Critica: 6,
+         0 : [ 'Optional', 'Opcional' ],
+         1 : [ 'Low', 'Baja' ],
+         2 : [ 'Medium', 'Media' ],
+         3 : [ 'High', 'Alta' ],
+         4 : [ 'Urgent', 'Urgente' ],
+         5 : [ 'Critical', 'Critico' ],
     }
 }

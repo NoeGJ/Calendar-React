@@ -2,6 +2,8 @@ import Modal from "react-modal";
 import { useCalendarStore, useUiStore } from "../../hooks";
 import { useEventModalStore } from "../../hooks";
 import { getEnvVariables } from "../../helpers";
+import { format } from "date-fns";
+import { es } from 'date-fns/locale';
 
 const customStyles = {
   content: {
@@ -17,12 +19,12 @@ const customStyles = {
 
 export const EventDetailsModal = () => {
   const { activeEvent, setActiveEvent, startDeleteEvent } = useCalendarStore();
-  const {openDateModal} = useUiStore();
-  const { isEventModalOpen, closeEventModal, removeEventWithDeatils } =
-    useEventModalStore();
+  const { openDateModal } = useUiStore();
+  const { isEventModalOpen, closeEventModal, removeEventWithDeatils } = useEventModalStore();
 
   const handleDelete = () => {
     startDeleteEvent();
+    closeEventModal();
   };
 
   const handleEdit = () => {
@@ -30,18 +32,14 @@ export const EventDetailsModal = () => {
     closeEventModal();
   };
 
-  if (getEnvVariables().VITE_MODE !== "test") {
-    Modal.setAppElement("#root");
-  }
-
   const onCloseModal = () => {
     closeEventModal();
     removeEventWithDeatils();
     setActiveEvent(null);
   };
+  
 
   return (
-    <>
       <Modal
         isOpen={isEventModalOpen}
         onRequestClose={onCloseModal}
@@ -84,7 +82,7 @@ export const EventDetailsModal = () => {
               <div className="row my-3 border-top border-black"></div>
 
               <div className="row mb-2">
-                <d className="fw-bold mr-2">Categoría: </d>
+                <div className="fw-bold mr-2">Categoría: </div>
                 <span className="text-primary"> {activeEvent?.category} </span>
               </div>
 
@@ -96,13 +94,17 @@ export const EventDetailsModal = () => {
                   <div className="ml-1 row">
                     <p className="mr-2">Inicio:</p>
                     <span className="text-primary">
-                      {activeEvent?.start.toLocaleString()}
+                      { activeEvent?.start &&
+                      ( format (new Date(activeEvent?.start), "dd 'de' MMMM 'del' yyyy, HH:mm:ss",{ locale: es }) )
+                      }
                     </span>
                   </div>
                   <div className="ml-1 row">
                     <p className="mr-2">Fin:</p>
                     <span className="text-primary">
-                      {activeEvent?.end.toLocaleString()}
+                      { activeEvent?.end &&
+                       ( format (new Date(activeEvent?.end), "dd 'de' MMMM 'del' yyyy, HH:mm:ss",{ locale: es }) )
+                      }
                     </span>
                   </div>
                 </div>
@@ -126,8 +128,10 @@ export const EventDetailsModal = () => {
               </div>
 
               <div className="row mb-2">
-                <p className="fw-bold mr-2">Última modificación: </p>{" "}
-                <span className="text-primary">{activeEvent?.updatedAt}</span>
+                <p className="fw-bold mr-2">Última modificación: </p>
+                { activeEvent?.updatedAt != null &&
+                ( <span className="text-primary">{ format (new Date(activeEvent?.updatedAt), "dd 'de' MMMM 'del' yyyy, HH:mm:ss",{ locale: es })}</span> )
+                }
               </div>
             </div>
 
@@ -153,7 +157,8 @@ export const EventDetailsModal = () => {
                           className="mr-2"
                           type="checkbox"
                           checked={activity.status !== "Pending"}
-                          onChange={true}
+                          readOnly
+                          disabled
                         />
                       </div>
                       <div className="col">
@@ -167,6 +172,5 @@ export const EventDetailsModal = () => {
           </div>
         </div>
       </Modal>
-    </>
   );
 };

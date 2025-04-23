@@ -75,6 +75,9 @@ export const groupsSlice = createSlice({
             state.subscribedMembers = state.subscribedMembers.filter(member => member.uid != payload);
             
         },
+        onAddRole: ( state, { payload } ) => {
+            
+        },
         onDeleteUnsubscribed: ( state, { payload } ) => {
             state.unsubscribedMembers = state.unsubscribedMembers.filter( member => member.uid != payload.uid );
         },
@@ -101,6 +104,7 @@ export const {
     onLoadsubscribedMembers,
     onDeleteMember,
     onDeleteUnsubscribed,
+    onAddRole
 
 
 } = groupsSlice.actions;

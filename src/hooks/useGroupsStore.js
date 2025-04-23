@@ -157,6 +157,8 @@ export const useGroupsStore = () => {
             
             const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-role/${ memberId }`,null, { params: { roleId: roleId } });
             console.log( data );
+            console.log(subscribedMembers);
+            
             
         } catch (error) {
             console.log(error);
@@ -166,9 +168,10 @@ export const useGroupsStore = () => {
 
     const deleteRole = async( memberId, roleId ) => {
         try {
-            console.log(memberId, roleId);
+            console.log(memberId, roleId, activeGroup.id);
             
             const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/delete-role/${ memberId }`, null, { params: { roleId } });
+            
             console.log( data );
             
         } catch (error) {

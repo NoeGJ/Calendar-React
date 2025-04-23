@@ -11,8 +11,12 @@ export const viewSlice = createSlice({
             state.type = payload.type;
             state.currentView = payload.view;
         },
+        onResetView: ( state ) => {
+            state.type = 'unselected';
+            state.currentView = 0;
+        }
     }
 
 });
 // Action creators are generated for each case reducer function
-export const { onChangeView } = viewSlice.actions;
+export const { onChangeView, onResetView } = viewSlice.actions;
