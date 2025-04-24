@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
-import { onChangeView } from "../store";
-import { useGroupsStore } from "./useGroupsStore";
+import { onChangeView, onResetView } from "../store";
 import { useCalendarStore } from "./useCalendarStore";
-
 
 export const useViewStore = () => {
 
@@ -17,6 +15,7 @@ export const useViewStore = () => {
     } = useSelector( state => state.view );
 
     const changeView = ( { type, view } ) => {
+        if( view == currentView ) return;
 
         resetEvents();
         setActiveEvent( null );
@@ -24,9 +23,14 @@ export const useViewStore = () => {
         dispatch( onChangeView({ type, view }))
     }
 
+    const resetView = () => {
+        dispatch( onResetView() );
+    }
+
     return {
         type,
         currentView,
         changeView,
+        resetView
     }
 }

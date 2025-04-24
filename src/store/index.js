@@ -9,5 +9,6 @@ export * from './ui/membersModalSlice';
 export * from './views/viewSlice';
 export * from './repository/repoSlice';
 export * from './calendarViews/calendarViewsSlice';
+export * from './ui/eventModalSlice'
 
 export * from './store';

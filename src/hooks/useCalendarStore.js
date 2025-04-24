@@ -82,7 +82,6 @@ export const useCalendarStore = () => {
         try {
             
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/events`);
-            console.log(data);
             
             const events = convertEventsToDateEvents( data );
             dispatch( onLoadEvents( events ) );

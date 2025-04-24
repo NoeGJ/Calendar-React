@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "react-big-calendar";
-import { useAuthStore, useCalendarStore, useGroupsStore, useUiStore } from "../../hooks";
+import { useAuthStore, useCalendarStore, useGroupsStore, useEventModalStore, useUiStore } from "../../hooks";
 import { localizer, getMessagesES } from '../../helpers'
 
 import { CalendarModal, FabAddNew, FabDelete, CalendarEventBox, MembersModal } from '..';
+import { EventDetailsModal } from "../components/EventDetailsModal";
 
 
 export const CalendarView = () => {
 
   const { user } = useAuthStore();
   const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
-  const { openDateModal } = useUiStore();
+  const { openEventModal } = useEventModalStore();
   const { activeGroup, loadCurrentPermissions, subscribedMembers, currentRoles } = useGroupsStore();
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week')
 
@@ -18,7 +19,7 @@ export const CalendarView = () => {
     const isMyEvent = ( user.uid === event.creator?._uid ) || ( user.uid === event.creator?.uid );
 
     const style = {
-      backgroundColor: isMyEvent ? '#347CF7' : '#465660',
+      backgroundColor:  '#347CF7',
       borderRadius: '0px',
       opacity: 0.8,
       color: 'white',
@@ -30,7 +31,7 @@ export const CalendarView = () => {
 
   }
   const onDoubleClick = ( event ) => {
-    openDateModal();
+    openEventModal();
   }
 
   const onSelect = ( event ) => {
@@ -52,9 +53,7 @@ export const CalendarView = () => {
 
     loadCurrentPermissions();
 
-    console.log("currentRoles useeffect", currentRoles);
-    
-    console.log(subscribedMembers);    
+
     
   }, [activeGroup])
   
@@ -93,8 +92,8 @@ export const CalendarView = () => {
 
   {/* <MembersModal /> */}
   <CalendarModal />
+  <EventDetailsModal/>
   <FabAddNew />
-  <FabDelete />
   </>
   
 )

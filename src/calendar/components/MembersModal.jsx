@@ -40,8 +40,7 @@ export const MembersModal = () => {
 
         console.log(currentPermissions);
         
-        
-        
+    
     }, [])
 
 
@@ -59,7 +58,6 @@ export const MembersModal = () => {
         const newUser = unsubscribedMembers.find( ( user ) => 
             email == user.email
         )
-        console.log( newUser );
         if (!newUser) return;
 
         setEmail('');
@@ -78,6 +76,8 @@ export const MembersModal = () => {
         } else{
             console.log("agregar");
             await addRole( memberId, roleId )
+            console.log( currentRoles );
+            console.log( currentPermissions );
 
         }
 

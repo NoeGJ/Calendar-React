@@ -28,27 +28,30 @@ const customStyles = {
 
 if( getEnvVariables().VITE_MODE !== 'test' )
     Modal.setAppElement("#root");
-
-export const CalendarModal = () => {
-
-  const { isDateModalOpen, closeDateModal } = useUiStore();
-  const { activeEvent, startSavingEvent, setActiveEvent } = useCalendarStore();
-
-  const [formSubmitted, setFormSubmitted] = useState(false);
-
-  const [formValues, setFormValues ] = useState({
-    title: '',
-    notes: '',
-    start: new Date(),
-    end:  addHours( new Date(), 2),
+  
+  
+  export const CalendarModal = () => {
+    
+    const { isDateModalOpen, closeDateModal } = useUiStore();
+    const { activeEvent, startSavingEvent, setActiveEvent } = useCalendarStore();
+    
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    
+    const [formValues, setFormValues ] = useState({
+      title: '',
+      notes: '',
+      start: new Date(),
+      end:  addHours( new Date(), 2),
+      category: '',
+      priority: 0
   });
-
+  
   const [activities, setActivities] = useState([])
 
   const [activity, setActivity] = useState('')
-  const [category, setCategory] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState(null)
-
+  
+  //const [selectedPriority, setSelectedPriority] = useState(0);
+  
   const titleClass = useMemo(() => {
     if( !formSubmitted ) return '';
 
@@ -56,16 +59,21 @@ export const CalendarModal = () => {
 
   }, [formValues.title, formSubmitted])
 
+
   useEffect(() => {
 
-    
     if( activeEvent !== null ){
       
-      const { activities, ...event } = activeEvent
+      const { activities, start, end, priority, ...event } = activeEvent
       
-      setFormValues({ ...event });
+      const prio = Object.entries( getPrioList() ).find( ([ _, value ]) => value[0] == priority )?.[0]
+      
+      setFormValues({ ...event, end: new Date(end), start: new Date(start), priority: prio  });
 
       setActivities( activities ? activities : [] );
+      
+
+      //form setSelectedPriority( prio );
     }
   
   }, [activeEvent])
@@ -104,20 +112,14 @@ export const CalendarModal = () => {
 
     if( formValues.title.length <= 0) return;
 
-    if ( category.length <= 0 ) return;
+     if ( formValues?.category == undefined )
+       delete formValues.category
 
-    if ( selectedPriority == null ) return;
-
-
-    const priorityNumber = getPrioList()[selectedPriority]
-    
-    await startSavingEvent({ ...formValues, activities: activities, category, priority: priorityNumber });
+    await startSavingEvent({ ...formValues, activities: activities  });
 
     closeDateModal();
     setFormSubmitted(false);
-    setCategory("");
-    setSelectedPriority("");
-
+    //setSelectedPriority(0);
   }
 
   // Actividades
@@ -146,17 +148,10 @@ export const CalendarModal = () => {
     ));
   }
 
-  // Categorias
-
-  const inputChangeCategory = ({ target }) => {
-    setCategory( target.value );
-  }
-
   // Prioridades
 
-  const handleSelectPriority = ( value) => {
-    
-    setSelectedPriority( value );
+  const handleSelectPriority = ( value ) => {    
+    setFormValues({ ...formValues, priority: value });
   }
 
   return (
@@ -170,13 +165,15 @@ export const CalendarModal = () => {
     >
       <div className="justify-content-between align-content-center">
       <h1> {formValues.title != "" ? formValues.title : 'Nuevo evento'} </h1>
-      <Dropdown>
+      <Dropdown> 
         <Dropdown.Toggle variant="primary" className="position-relative">
-          {selectedPriority ? `${selectedPriority}` : "Prioridad"}
+          
+          Opcional
+          
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {Object.entries(getPrioList()).map( ([label, value]) => (
-            <Dropdown.Item onClick={() => handleSelectPriority(label)} key={value}>{ label }</Dropdown.Item>
+          {Object.entries(getPrioList()).map( ([key, value]) => (
+            <Dropdown.Item  onClick={() => handleSelectPriority( key )} key={ key }>{ value[1] }</Dropdown.Item>
           ))
 
           }
@@ -225,13 +222,9 @@ export const CalendarModal = () => {
             placeholder="Categoria"
             name="category"
             autoComplete="off"
-            value={ category }
-            onChange={ inputChangeCategory }
-            
+            value={ formValues.category || '' }
+            onChange={ onInputChanged }
           />
-          <small id="emailHelp" className="form-text text-muted">
-            Asigna una categoria al evento
-          </small>
         </div>
 
         <div className="form-group mb-2">

@@ -33,6 +33,7 @@ export const NavBar = () => {
   }
 
   const handleRepoBtn = () => {
+
     changeView({ type: 'repository', view: 2 });
   }
 
@@ -73,6 +74,7 @@ export const NavBar = () => {
 
           <Dropdown  className="btn" style={{ display: 'inline-block', width: 'auto', height: '100%'}}>
             <Dropdown.Toggle variant="secondary">
+            <i className="fas fa-book"></i>
               Vistas
             </Dropdown.Toggle>
             <Dropdown.Menu>

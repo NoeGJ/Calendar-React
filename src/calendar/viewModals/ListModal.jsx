@@ -24,7 +24,7 @@ export const ListModal = () => {
         if( activeGroup.length <= 0 ) return;
        loadCategories();
       console.log(
-       categories)
+       events)
       
     }, [activeGroup])
     
@@ -41,10 +41,11 @@ export const ListModal = () => {
     >   
      <div>
           <h3>Listado</h3>
+          { events.length > 0 ?
           <table style={{ width: "100%", backgroundColor: "#ddd" }}>
             <thead>
               <tr>
-                <th>Evento</th>
+                <th>Eventos</th>
                 <th>Categorias</th>
               </tr>
             </thead>
@@ -52,16 +53,21 @@ export const ListModal = () => {
               {events?.map((item, index) => (
                 <tr key={index}>
                   <td>{item.title}</td>
-              {categories?.map( category => {
-                
-                <td>{category.id}</td> 
-
-              })
-              }
+                <td>{item.category}</td> 
                 </tr>
               ))}
             </tbody>
           </table>
+          : (
+            <div className="container col-md-6 align-items-center justify-content-center" style={{ height: '600px', position: 'relative', top: '200px' }}>
+              <p> No hay eventos disponibles</p>
+              <button className="btn bg-primary text-white col">
+                <i className="fa fa-plus"></i>
+                  {`\tNuevo`}
+              </button>
+            </div>
+          )
+          }
         </div>
     
     </Modal>
