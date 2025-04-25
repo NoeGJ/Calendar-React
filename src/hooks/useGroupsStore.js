@@ -10,7 +10,9 @@ import {
     onDeleteUnsubscribed,
     onDeleteMember,
     onUpdateGroup,
-    onDeleteGroup
+    onDeleteGroup,
+    onAddRole,
+    onDeleteRole
 } from '../store/groups/groupsSlice';
 import { calendarApi } from "../api";
 
@@ -153,12 +155,15 @@ export const useGroupsStore = () => {
 
     const addRole = async( memberId, roleId ) => {
         try {
-            console.log(memberId, roleId);
+            //console.log(memberId, roleId);
             
             const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-role/${ memberId }`,null, { params: { roleId: roleId } });
-            console.log( data );
-            console.log(subscribedMembers);
-            
+            //console.log( data );
+            //console.log(subscribedMembers);
+            dispatch( onAddRole({ id: memberId, roleId: roleId, data }) );
+            //console.log(subscribedMembers);
+
+            dispatch( loadCurrentPermissions() );
             
         } catch (error) {
             console.log(error);
@@ -168,12 +173,16 @@ export const useGroupsStore = () => {
 
     const deleteRole = async( memberId, roleId ) => {
         try {
-            console.log(memberId, roleId, activeGroup.id);
+            //console.log(memberId, roleId, activeGroup.id);
             
-            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/delete-role/${ memberId }`, null, { params: { roleId } });
+            await calendarApi.post(`/groups/${ activeGroup.id }/delete-role/${ memberId }`, null, { params: { roleId } });
+            //console.log(subscribedMembers);            
             
-            console.log( data );
+            dispatch( onDeleteRole({ id: memberId, roleId: roleId }) );
+            //console.log(subscribedMembers);
             
+            dispatch( loadCurrentPermissions() );
+
         } catch (error) {
             console.log(error);
             

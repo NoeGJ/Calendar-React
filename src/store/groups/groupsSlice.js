@@ -23,7 +23,7 @@ export const groupsSlice = createSlice({
 
             //console.log(" slice ",state.currentRoles);
             //console.log(state.currentPermissions);
-            
+
         },
 
         onAddNewGroup: (state, { payload }) => {
@@ -41,16 +41,16 @@ export const groupsSlice = createSlice({
             state.activeGroup = null;
         },
         onDeleteGroup: ( state, { payload } ) => {
-            
+
             state.groups = state.groups.filter( group => group.id !== payload );
             state.activeGroup = null;
-            
+
         },
         onLoadGroups: (state, { payload = [] }) => {
             state.isLoadingGroups = false;
-            
+
             payload.forEach(group => {
-                
+
                 const exists = state.groups.some( dbGroup => dbGroup.id === group.id );
                 if( !exists ){
                     state.groups.push( group );
@@ -60,23 +60,50 @@ export const groupsSlice = createSlice({
         onLoadsubscribedMembers: ( state, { payload } ) => {
             state.isLoadingMembers = false;
             state.subscribedMembers = payload;
+            state.subscribedMembers = state.subscribedMembers.sort( (a, b) => {
+                if( a.uid === state.activeGroup.creatorId ) return -1;
+                if( b.uid === state.activeGroup.creatorId ) return 1;
+                return 0;
+            });
         },
         onLoadunsubscribed: ( state, { payload = [] } ) => {
             state.isLoadingMembers = false;
-            
+
             state.unsubscribedMembers = payload;
         },
 
-        onAddNewMember: (state, { payload }) => {   
-            
+        onAddNewMember: (state, { payload }) => {
+
             state.subscribedMembers.push( payload )
         },
         onDeleteMember: ( state, { payload }) => {
             state.subscribedMembers = state.subscribedMembers.filter(member => member.uid != payload);
-            
+
         },
         onAddRole: ( state, { payload } ) => {
-            
+            state.subscribedMembers = state.subscribedMembers.map( member => {
+                if( member.uid === payload.id ){
+                    return {
+                        ...member,
+                        currentRoles: payload.data
+                    }
+                }
+                return member;
+            });
+        },
+        onDeleteRole: ( state, { payload } ) => {
+            state.subscribedMembers = state.subscribedMembers.map( ( member ) => {
+                if( payload.id === member.uid ){
+                    return {
+                        ...member,
+                        currentRoles: member.currentRoles.filter((item) => item.id !== payload.roleId ),
+                    };
+                }
+                return member;
+            });
+        },
+        onUpdateRoles: ( state, { payload } ) => {
+
         },
         onDeleteUnsubscribed: ( state, { payload } ) => {
             state.unsubscribedMembers = state.unsubscribedMembers.filter( member => member.uid != payload.uid );
@@ -90,13 +117,13 @@ export const groupsSlice = createSlice({
     }
 });
 // Action creators are generated for each case reducer function
-export const { 
-    onSetActiveGroup, 
-    onSetCurrentPermissions, 
-    onAddNewGroup, 
-    onUpdateGroup, 
-    onDeleteGroup, 
-    onLoadGroups, 
+export const {
+    onSetActiveGroup,
+    onSetCurrentPermissions,
+    onAddNewGroup,
+    onUpdateGroup,
+    onDeleteGroup,
+    onLoadGroups,
     onLogoutGroups,
     onAddNewMember,
 
@@ -104,7 +131,9 @@ export const {
     onLoadsubscribedMembers,
     onDeleteMember,
     onDeleteUnsubscribed,
-    onAddRole
+    onAddRole,
+    onDeleteRole,
+    onUpdateRoles
 
 
 } = groupsSlice.actions;

@@ -57,16 +57,16 @@ export const NavBar = () => {
           <button className="btn btn-dark  ml-3 mb-1" onClick={ handleMembersBtn }>
             
               <i className="fa-solid fa-users"></i>
-              Usuarios
+              {`\tUsuarios`}
             
           </button>
           <button className="btn btn-dark ml-1 mb-1" onClick={ handleCalendarBtn }>
               <i className="fa-solid fa-calendar" ></i>
-              Calendar
+              {`\tCalendar`}
           </button>
           <button className="btn btn-dark  ml-1 mb-1" onClick={ handleRepoBtn }>
             <i className="fa-solid fa-archive"></i>
-            Repo
+            {`\tRepo`}
           </button>
           </>
         }
