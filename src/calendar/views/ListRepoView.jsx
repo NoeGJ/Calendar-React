@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRepoStore } from "../../hooks/useRepoStore";
 import { checkRole, formatBytes, getRolesList, roleMessage } from "../../helpers";
 import { format } from "date-fns";
@@ -18,7 +18,6 @@ const { user } = useAuthStore();
 
 useEffect(() => {
   loadFiles();
-  
   
 }, [])
 
@@ -139,7 +138,7 @@ return (
             <button className="btn bg-primary text-white mr-2" onClick={ () => handleDownload( file ) }>
               Descargar
             </button>
-            <button className="btn" onClick={ () => handleDelete( file ) }>
+            <button title="Eliminar" className="btn" onClick={ () => handleDelete( file ) }>
               <i className="fa fa-close" />
             </button>
           </td>

@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "react-big-calendar";
-import { useAuthStore, useCalendarStore, useGroupsStore, useEventModalStore, useUiStore } from "../../hooks";
+import { useCalendarStore, useGroupsStore, useEventModalStore } from "../../hooks";
 import { localizer, getMessagesES } from '../../helpers'
 
-import { CalendarModal, FabAddNew, FabDelete, CalendarEventBox, MembersModal } from '..';
+import { CalendarModal, FabAddNew, CalendarEventBox } from '..';
 import { EventDetailsModal } from "../components/EventDetailsModal";
 
 
 export const CalendarView = () => {
 
-  const { user } = useAuthStore();
   const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
   const { openEventModal } = useEventModalStore();
   const { activeGroup, loadCurrentPermissions, subscribedMembers, currentRoles } = useGroupsStore();
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week')
 
   const eventStyleGetter = ( event, start, end, isSelected ) => {
-    const isMyEvent = ( user.uid === event.creator?._uid ) || ( user.uid === event.creator?.uid );
-
     const style = {
       backgroundColor:  '#347CF7',
       borderRadius: '0px',
@@ -43,29 +40,18 @@ export const CalendarView = () => {
     setLastView( event );
   }
 
-  useEffect( () => {
-    
-
-  },[])
-
-
   useEffect(() => {
 
     loadCurrentPermissions();
 
-
-    
   }, [activeGroup])
   
   useEffect(() => {
       if(currentRoles.length === 0) return;
      startLoadingEvents();
-
-     
-    
+         
   }, [currentRoles])
   
-
 
   return (
   <>
@@ -89,12 +75,9 @@ export const CalendarView = () => {
     
   />
 
-
   {/* <MembersModal /> */}
   <CalendarModal />
   <EventDetailsModal/>
   <FabAddNew />
   </>
-  
-)
-}
+)}

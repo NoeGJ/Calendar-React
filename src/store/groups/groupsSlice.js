@@ -112,6 +112,9 @@ export const groupsSlice = createSlice({
             //state.isLoadingGroups = true
             state.groups = []
             state.currentPermissions = {}
+            state.currentRoles = []
+            state.subscribedMembers = []
+            state.unsubscribedMembers = []
             state.activeGroup = null
         }
     }

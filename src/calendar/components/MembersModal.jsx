@@ -16,6 +16,7 @@ const customStyles = {
     marginRight: "-20%",
     transform: "translate(-50%, -50%)",
     width: "500px",
+    overflowY: 'hidden'
   },
 };
 
@@ -97,12 +98,12 @@ export const MembersModal = () => {
       closeTimeoutMS={200}
       style={customStyles}
     >
-      <h5>Compartir {grupo?.name}</h5>
+      <form className="container" onSubmit={onSubmit}>
+      <h5 className="ml-2">Compartir {grupo?.name}</h5>
 
       <hr />
-      <form className="container" onSubmit={onSubmit}>
         <div className="form-group">
-          <div className="d-flex">
+          <div className="d-flex ml-2">
             <input
               type="text"
               className="  custom-select custom-select-sm mr-2"
@@ -119,53 +120,51 @@ export const MembersModal = () => {
               ))}
             </datalist>
             <button
-              className="btn bg-primary text-white w-25"
+              className="btn bg-primary text-white w-25 btn-sm"
               type="submit"
               onClick={onSubmit}
+              
             >
               Compartir
             </button>
           </div>
         </div>
-
-        <div className="form-group mt-2">
-          <ul className="list-unstyled">
+        
+        <div className="form-group mt-2" style={{ overflowY: 'auto', minHeight: '300px', height: '200px' }}>
+          <ul className="list-unstyled" >
             {subscribedMembers.map((member, index) => (
-              <li className="p-2" key={index}>
+              <li className="p-2 list-group-item-action" key={index} >
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
-                    <div className="">
+                    <strong>
                       {member.username} {member.uid == user.uid ? "(Tú)" : ""}
-                    </div>
-                    <sub
-                      className="position-relative text-muted"
+                    </strong>
+                    <small
+                      className="d-block text-muted"
                       style={{ top: -10 }}
                     >
                       {member.email}
-                    </sub>
+                    </small>
                   </div>
-                  <div className="d-flex">
+                  <div className="d-flex align-items-center gap-1">
+                    {!member.currentRoles.some((role) => role.id == getRolesList().Creador) ? (
                     <Dropdown drop="end">
                       <Dropdown.Toggle
                         variant="primary"
                         id="dropdown-basic"
                         style={{ width: "100px" }}
-                        disabled={member.currentRoles.some(
-                          (role) => role.id == 1
-                        )}
+                        size="sm"
                       >
-                        {member.currentRoles.some((role) => role.id == 1)
-                          ? "Creador"
-                          : "Permisos"}
+                        Permisos
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu className="form-check" as="div">
                         {Object.entries(getRolesList()).map(
                           ([keys, value], index) =>
-                            value != 1 && (
+                            value != getRolesList().Creador && (
                               <Dropdown.Item key={index}>
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input me-2"
                                   type="checkbox"
                                   checked={member.currentRoles.some(
                                     (role) => role.id == value
@@ -180,9 +179,13 @@ export const MembersModal = () => {
                         )}
                       </Dropdown.Menu>
                     </Dropdown>
-                    {!member.currentRoles.some((role) => role.id == 1) && (
+                    )
+                    :
+                    <span  className="badge bg-primary text-white">Creador</span>
+                    }
+                    {!member.currentRoles.some((role) => role.id == getRolesList().Creador) && (
                       <button
-                        className="btn ml-2"
+                        className="btn btn-outline-danger btn-sm ml-2"
                         onClick={() => handleDeleteMember(member.uid)}
                       >
                         <i className="fa fa-user-times"></i>
@@ -192,6 +195,7 @@ export const MembersModal = () => {
                 </div>
               </li>
             ))}
+
           </ul>
         </div>
       </form>

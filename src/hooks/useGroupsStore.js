@@ -163,7 +163,8 @@ export const useGroupsStore = () => {
             dispatch( onAddRole({ id: memberId, roleId: roleId, data }) );
             //console.log(subscribedMembers);
 
-            dispatch( loadCurrentPermissions() );
+            if( memberId == user.uid )
+                await loadCurrentPermissions()
             
         } catch (error) {
             console.log(error);
@@ -181,7 +182,8 @@ export const useGroupsStore = () => {
             dispatch( onDeleteRole({ id: memberId, roleId: roleId }) );
             //console.log(subscribedMembers);
             
-            dispatch( loadCurrentPermissions() );
+            if( memberId == user.uid )
+                await loadCurrentPermissions();
 
         } catch (error) {
             console.log(error);

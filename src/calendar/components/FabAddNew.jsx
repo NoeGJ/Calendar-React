@@ -1,10 +1,11 @@
 import { addHours } from "date-fns";
 import { useCalendarStore, useGroupsStore, useUiStore } from "../../hooks";
+import { checkRole, getRolesList } from "../../helpers";
 
 export const FabAddNew = () => {
   const { openDateModal } = useUiStore();
   const { setActiveEvent } = useCalendarStore();
-  const { activeGroup } = useGroupsStore();
+  const { activeGroup, currentRoles } = useGroupsStore();
 
   const handleClickNew = () => {
     setActiveEvent({      
@@ -17,10 +18,10 @@ export const FabAddNew = () => {
     });
     openDateModal();
   };
-
+  
   return (
     <button className="btn btn-primary fab" onClick={handleClickNew}
-    style={{ display: activeGroup ? '' : 'none' }}
+    style={{ display: activeGroup && checkRole(currentRoles, getRolesList().CrearEventos)  ? '' : 'none' }}
     >
       <i className="fas fa-plus"></i>
     </button>
