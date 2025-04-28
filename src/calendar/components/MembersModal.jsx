@@ -15,7 +15,8 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-20%",
     transform: "translate(-50%, -50%)",
-    width: "500px",
+    width: "100vw",
+    maxWidth: '500px',
     overflowY: 'hidden'
   },
 };
@@ -27,7 +28,6 @@ export const MembersModal = () => {
     startAddNewMember,
     loadUnsubscribed,
     unsubscribedMembers,
-    currentRoles,
     subscribedMembers,
     addRole,
     deleteRole,
@@ -37,15 +37,12 @@ export const MembersModal = () => {
   const { grupo, can } = currentPermissions;
 
   const [email, setEmail] = useState("");
-  //const [selectedRoles, setSelectedRoles] = useState([])
 
   const { user } = useAuthStore();
 
   useEffect(() => {
     loadUnsubscribed();
 
-    console.log(currentPermissions);
-    console.log(currentRoles);
   }, []);
 
   const handleInputChanged = ({ target }) => {
@@ -65,21 +62,16 @@ export const MembersModal = () => {
   };
 
   const handleToggleRole = async ({ target }, memberId, roleId) => {
-    if (!target.checked) {
-      console.log("eliminar");
-
+    if (!target.checked) 
       await deleteRole(memberId, roleId);
-    } else {
-      console.log("agregar");
+     else 
       await addRole(memberId, roleId);
-      console.log(currentRoles);
-      console.log(currentPermissions);
-    }
+    
   };
 
   const handleDeleteMember = async (memberId) => {
     Swal.fire({
-      text: "Seguro que quieres expulsar al usuario",
+      text: "¿Seguro que quieres expulsar al usuario?",
       showCancelButton: true,
       confirmButtonText: "Confirmar",
     }).then(({ isConfirmed }) => {

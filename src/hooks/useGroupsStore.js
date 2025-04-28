@@ -31,22 +31,19 @@ export const useGroupsStore = () => {
 
     const setActiveGroup = ( group ) => {
         dispatch( onSetActiveGroup( group ) );
+
+        localStorage.setItem( 'group', JSON.stringify(group) );
         
     }
 
     const loadCurrentPermissions = async() => {
         try {
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }`);
-
-            //console.log( data );
             
-
             const {  can, grupo } = data;
 
             const myRoles = grupo?.members.find( member => member.uid == user.uid );
-            console.log( myRoles );
             
-
             dispatch( onSetCurrentPermissions( { can, roles: myRoles.currentRoles  } ) );
 
         } catch (error) {
@@ -55,25 +52,17 @@ export const useGroupsStore = () => {
         }
     }
 
-    const startCreatingGroup = async ( groupName ) => {
-        
-        
+    const startCreatingGroup = async ( groupName ) => {                
         try {
 
-            if( activeGroup?.id ){
-                console.log("update");
-                
+            if( activeGroup?.id ){                
                 const { data } = await calendarApi.put(`/groups/${ activeGroup.id }`, { name: groupName });
                 
                 dispatch( onUpdateGroup( data ) );
                 return;
             }
             
-            console.log("create");
-            const { data } = await calendarApi.post('/groups', { name: groupName  });
-
-            console.log(data);
-            
+            const { data } = await calendarApi.post('/groups', { name: groupName  });         
             
             dispatch( onAddNewGroup({ ...data, creatorId: user.uid  }) );
             
@@ -85,12 +74,8 @@ export const useGroupsStore = () => {
 
     const startLoadingGroups = async () => {
         try {
-            const { data } = await calendarApi.get('/users/logged');
-            console.log( data );
-
-            
+            const { data } = await calendarApi.get('/users/logged');           
             dispatch( onLoadGroups( data.groups ));
-
             
         } catch (error) {
             console.log('Error al cargar los grupos');
@@ -102,7 +87,6 @@ export const useGroupsStore = () => {
     const editGroup = async ( groupId ) => {
         try {
             const { data } = await calendarApi.put(`/groups/${ groupId }`);
-            console.log(data);
 
             //dispatch( onUpdateGroup( data ) );
             
@@ -126,9 +110,7 @@ export const useGroupsStore = () => {
     const startAddNewMember = async (  newMember ) => {
         try {
             
-            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`,null, { params: { newMember: newMember.uid }});
-            console.log( data );
-            
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`,null, { params: { newMember: newMember.uid }});            
             
             dispatch( onAddNewMember( data ) );
 
@@ -155,13 +137,9 @@ export const useGroupsStore = () => {
 
     const addRole = async( memberId, roleId ) => {
         try {
-            //console.log(memberId, roleId);
             
             const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-role/${ memberId }`,null, { params: { roleId: roleId } });
-            //console.log( data );
-            //console.log(subscribedMembers);
             dispatch( onAddRole({ id: memberId, roleId: roleId, data }) );
-            //console.log(subscribedMembers);
 
             if( memberId == user.uid )
                 await loadCurrentPermissions()
@@ -174,13 +152,10 @@ export const useGroupsStore = () => {
 
     const deleteRole = async( memberId, roleId ) => {
         try {
-            //console.log(memberId, roleId, activeGroup.id);
             
-            await calendarApi.post(`/groups/${ activeGroup.id }/delete-role/${ memberId }`, null, { params: { roleId } });
-            //console.log(subscribedMembers);            
+            await calendarApi.post(`/groups/${ activeGroup.id }/delete-role/${ memberId }`, null, { params: { roleId } });         
             
             dispatch( onDeleteRole({ id: memberId, roleId: roleId }) );
-            //console.log(subscribedMembers);
             
             if( memberId == user.uid )
                 await loadCurrentPermissions();

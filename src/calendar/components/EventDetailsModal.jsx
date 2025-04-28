@@ -83,7 +83,11 @@ export const EventDetailsModal = () => {
 
               <div className="row mb-2">
                 <div className="fw-bold mr-2">Categoría: </div>
-                <span className="text-primary"> {activeEvent?.category} </span>
+                {activeEvent?.category != null ?
+                <span className="text-primary"> { activeEvent.category} </span>
+                :
+                <span className="text-danger"> Sin Categoría </span>
+                }
               </div>
 
               <div className="row mb-2">

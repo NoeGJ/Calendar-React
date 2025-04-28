@@ -1,9 +1,11 @@
 import { checkRole, getRolesList, roleMessage } from "../../helpers";
 import { useAuthStore, useDrawerStore, useGroupsStore, useMembersModal, useViewStore } from "../../hooks"
 import { MembersModal } from "./MembersModal";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
 
 
 export const NavBar = () => {
+
   
   const { startLogout } = useAuthStore();
   const { isOpenDrawer, openDrawer, closeDrawer } = useDrawerStore();
@@ -35,64 +37,58 @@ export const NavBar = () => {
   }
 
   const handleCalendarBtn = () => {
-    console.log(activeGroup);
-    
+
     changeView({ type: 'calendar', view: 1 })
     
   }
   
   return (
     <>
-    <div className="navbar navbar-dark bg-dark mb-4 px-4">
-        
-        <span className="navbar-brand">
-          <span className="">
-            <button className="btn btn-dark mb-1 mr-2" onClick={handleToggleDrawer}>
-              <i className="fa-solid fa-bars"></i>
-            </button>
-            { activeGroup == null ? '' : activeGroup.name }
-          </span>
-          <span>
-          { hasGroupSelected && <>
-          <button className="btn btn-dark  ml-3 mb-1" onClick={ handleMembersBtn }>
-            
-              <i className="fa-solid fa-users"></i>
-              {`\tUsuarios`}
-            
-          </button>
-          <button className="btn btn-dark ml-1 mb-1" onClick={ handleCalendarBtn }>
-              <i className="fa-solid fa-calendar" ></i>
-              {`\tCalendar`}
-          </button>
-          <button className="btn btn-dark  ml-1 mb-1" onClick={ handleRepoBtn }>
-            <i className="fa-solid fa-archive"></i>
-            {`\tRepo`}
-          </button>
-          </>
-        }
-        </span>
-        </span>
-        
+    <Navbar bg="dark" variant="dark" expand='lg' className="mb-2 px-4">
+      <Container fluid>
+    <Navbar.Brand className="d-flex align-items-center">
+        <button className="btn btn-dark me-2" onClick={handleToggleDrawer}>
+          <i className="fa-solid fa-bars"></i>
+        </button>        
+          { activeGroup == null ? '' : activeGroup.name }    
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="navbar-nav" />
 
-
-        <div className="d-flex justify-content-end">
-          {/* {
-            !hasGroupSelected &&
-            <button className="btn btn-dark  mr-3">
-              <i class="fa-solid fa-plus"></i>
-            </button>
-          } */}
-          <button 
-          className="btn btn-outline-danger"
-          onClick={ startLogout }
-          >
-              <i className="fas fa-sign-out-alt"></i>
-              &nbsp;
+      <Navbar.Collapse id="navbar-nav">
+        <Nav className="w-100 align-items-center">
+      
+            { hasGroupSelected && (
+              <>
+              <button className="btn btn-dark me-2 my-1" onClick={handleMembersBtn}>
+                <i className="fa-solid fa-users"></i> Usuarios
+              </button>                      
               
-              <span>Salir</span>
-          </button>
-        </div>
-    </div>
+              <button className="btn btn-dark me-2 my-1" onClick={handleCalendarBtn}>
+                <i className="fa-solid fa-calendar"></i> Calendar
+              </button>                    
+              
+              <button className="btn btn-dark me-2 my-0" onClick={handleRepoBtn}>
+                <i className="fa-solid fa-archive"></i> Repo
+              </button>
+              
+              </>
+            )}
+          </Nav>          
+
+          <Nav className="align-items-center">
+            <Button
+              variant="outline-danger"
+              onClick={startLogout}
+              className="me-2 ms-lg-auto my-1"
+              style={{ width: '80px' }}
+            >
+              <i className="fas fa-sign-out-alt"></i> Salir
+            </Button>
+          </Nav>  
+    
+    </Navbar.Collapse>
+    </Container>
+    </Navbar>
     {
       ( activeGroup != null && checkRole( currentRoles, getRolesList().Administrador )) &&
       <MembersModal />
