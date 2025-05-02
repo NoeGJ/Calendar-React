@@ -33,6 +33,7 @@ export const UnselectedGroup = () => {
     }
 
     const handleNewGroup = () => {
+        setActiveGroup( null );
         openModalName();
          
     }

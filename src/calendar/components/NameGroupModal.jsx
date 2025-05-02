@@ -4,19 +4,23 @@ import { useGroupsStore, useNameGroupStore } from "../../hooks";
 
 const customStyles = {
     content: {
-      top: "50%",
+      position: 'absolute',
+      top: "40%",
       left: "50%",
       right: "auto",
       bottom: "auto",
-      marginRight: "-20%",
       transform: "translate(-50%, -50%)",
+      display: 'inline-block',
+      minWidth: '300px',
+      maxWidth: '300px',
+      width: '300px'
     },
   };
 
 export const NameGroupModal = () => {
 
     const { isOpenModalName, closeModalName } = useNameGroupStore();
-    const { startCreatingGroup, activeGroup } = useGroupsStore();
+    const { startCreatingGroup, activeGroup, setActiveGroup } = useGroupsStore();
     
     const [nameGroup, setNameGroup] = useState('')
     const [submitted, setSubmitted] = useState(false)
@@ -48,22 +52,30 @@ export const NameGroupModal = () => {
     }
 
     useEffect(() => {
+        
         if( activeGroup != null ){
-          setNameGroup( activeGroup.name );
-        }
+          setNameGroup( activeGroup.name );      
+        }    
     }, [activeGroup])
     
+    const onCloseModalName = () => {
+
+      setNameGroup('');
+      setSubmitted(false);
+      closeModalName();
+    }
 
   return (
     <Modal
         isOpen={ isOpenModalName }
-        onRequestClose={ closeModalName }
+        onRequestClose={ onCloseModalName }
         className="modal-Name"
         overlayClassName="modal-fondo"
         closeTimeoutMS={200}
         style={ customStyles }
     >
-      <h2>Nuevo Grupo</h2>
+
+      <h2>{ (activeGroup ? 'Editar' : 'Nuevo') + ` Grupo`}</h2>
       <hr />
       <form className="container" onSubmit={ handleSubmitNameGroup }>
         <label>Titulo del grupo</label>
