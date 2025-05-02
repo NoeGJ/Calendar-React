@@ -49,8 +49,7 @@ if( getEnvVariables().VITE_MODE !== 'test' )
   const [activities, setActivities] = useState([])
 
   const [activity, setActivity] = useState('')
-  
-  //const [selectedPriority, setSelectedPriority] = useState(0);
+  const [prioritySel, setPrioritySel] = useState('Opcional')
   
   const titleClass = useMemo(() => {
     if( !formSubmitted ) return '';
@@ -66,14 +65,15 @@ if( getEnvVariables().VITE_MODE !== 'test' )
       
       const { activities, start, end, priority, ...event } = activeEvent
       
-      const prio = Object.entries( getPrioList() ).find( ([ _, value ]) => value[0] == priority )?.[0]
+      const prio = Object.entries( getPrioList() ).find( ([ key, value ]) => value[0] == priority )
       
-      setFormValues({ ...event, end: new Date(end), start: new Date(start), priority: prio  });
+      if(!prio ) return;
+      
+      setFormValues({ ...event, end: new Date(end), start: new Date(start), priority: prio[0]  });
 
       setActivities( activities ? activities : [] );
       
-
-      //form setSelectedPriority( prio );
+      setPrioritySel( prio[1][1] );
     }
   
   }, [activeEvent])
@@ -150,8 +150,9 @@ if( getEnvVariables().VITE_MODE !== 'test' )
 
   // Prioridades
 
-  const handleSelectPriority = ( value ) => {    
-    setFormValues({ ...formValues, priority: value });
+  const handleSelectPriority = ( value, key ) => {
+    setPrioritySel( value );
+    setFormValues({ ...formValues, priority: key });
   }
 
   return (
@@ -168,12 +169,12 @@ if( getEnvVariables().VITE_MODE !== 'test' )
       <Dropdown> 
         <Dropdown.Toggle variant="primary" className="position-relative">
           
-          Opcional
+          { prioritySel }
           
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {Object.entries(getPrioList()).map( ([key, value]) => (
-            <Dropdown.Item  onClick={() => handleSelectPriority( key )} key={ key }>{ value[1] }</Dropdown.Item>
+            <Dropdown.Item  onClick={() => handleSelectPriority( value[1], key )} key={ key }>{ value[1] }</Dropdown.Item>
           ))
 
           }
