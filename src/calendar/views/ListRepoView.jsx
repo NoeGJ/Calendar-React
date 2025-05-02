@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRepoStore } from "../../hooks/useRepoStore";
 import { checkRole, formatBytes, getRolesList, roleMessage } from "../../helpers";
 import { format } from "date-fns";
 import { es } from 'date-fns/locale';
 import { useAuthStore, useGroupsStore } from "../../hooks";
+import { Container } from "react-bootstrap";
+import Swal from "sweetalert2";
+
 
 const LIMITE = 15000000;
 
@@ -18,7 +21,6 @@ const { user } = useAuthStore();
 
 useEffect(() => {
   loadFiles();
-  
   
 }, [])
 
@@ -83,13 +85,21 @@ const handleDelete = ( file ) => {
     roleMessage();
     return;
   }
-  deleteFile( file.id );
+
+  Swal.fire({
+    text: "¿Seguro que quieres eliminar el archivo?",
+    showCancelButton: true,
+    confirmButtonText: "Confirmar",
+  }).then(({ isConfirmed }) => {
+    if (!isConfirmed) return;
+      deleteFile( file.id );
+  })
 }
 
 const handleDrop = ( event ) => {
   event.preventDefault();
   const file = event.dataTransfer.files[0]
-  //console.log(event.dataTransfer.files);
+ 
   transferData( file )
 }
 
@@ -100,7 +110,8 @@ const handleDragOver = ( event ) => {
 
 return (
   <> 
-  <div >
+  <Container className="d-flex justify-content-center align-items-center" fluid>
+    <div className="table-responsive d-none d-md-block" style={{ width: '100%'}}>
     <table className="table table-hover " >
       <thead>
       <tr>
@@ -139,7 +150,7 @@ return (
             <button className="btn bg-primary text-white mr-2" onClick={ () => handleDownload( file ) }>
               Descargar
             </button>
-            <button className="btn" onClick={ () => handleDelete( file ) }>
+            <button title="Eliminar" className="btn" onClick={ () => handleDelete( file ) }>
               <i className="fa fa-close" />
             </button>
           </td>
@@ -147,9 +158,35 @@ return (
 
       ))}
       </tbody>
-    </table>      
+    </table>
     </div>
-    {/* <MembersModal />       */}
+
+      <div className="d-block d-md-none " style={{ width: '100%' }}>
+        <ul className="list-unstyled" style={{ overflowY: 'auto' }}>
+          <li className="d-flex list-group-item-action justify-content-center align-items-center my-1">
+          <button className="btn" onClick={ handleNewFile }>
+              <i className="fa fa-plus mr-2" />              
+            </button>
+          </li>
+          {files.map( (file, index) => (
+            <li key={index} className="d-flex justify-content-between align-items-center list-group-item-action">
+              <div>
+                <strong className="text-dark">{ file?.name.length >= 25 ? file?.name.slice(0, 22) + '...' : file.name  }</strong>
+                <small className="d-block text-muted">{ format (new Date(file.uploadedAt), "dd MMMM yyyy, HH:mm:ss",{ locale: es }) }</small>
+              </div>
+                <div className="d-flex align-items-center">
+                  <button className="btn text-primary mr-2" onClick={ () => handleDownload( file ) }>
+                    <i className="fa fa-download"></i>
+                  </button>
+                  <button className="btn text-danger" onClick={ () => handleDelete( file ) }>
+                    <i className="fa fa-close"></i>
+                  </button>
+                </div>
+            </li>
+          ))}
+        </ul>
+      </div>      
+    </Container>
   </>
 )
 }

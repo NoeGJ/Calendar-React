@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuthStore, useGroupsStore, useNameGroupStore, useViewStore } from "../../hooks"
 import { NameGroupModal } from "../components/NameGroupModal";
 import { Dropdown } from "react-bootstrap";
@@ -10,18 +10,30 @@ export const UnselectedGroup = () => {
 
     const { user } = useAuthStore();
     const { groups, setActiveGroup, deleteGroup } = useGroupsStore();
-    //const [groups, setGroups] = useState([])
-    const { openModalName, isOpenModalName } = useNameGroupStore();
+    const { openModalName } = useNameGroupStore();
     const { changeView } = useViewStore();
 
     const colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-info']
 
+    useEffect(() => {
+      const selectGroup = JSON.parse( localStorage.getItem('group'));
+      if (!selectGroup ) return;
+      
+      
+      setActiveGroup( selectGroup );
+      changeView({ type: 'Calendar', view: 1 });
+    }, [])
+    
+
     const handleSelectGroup = (group, index) => {
+        console.log(group);
+        
         setActiveGroup( group )
-        changeView({ type: 'Calendar', view: 1, group });
+        changeView({ type: 'Calendar', view: 1 });
     }
 
     const handleNewGroup = () => {
+        setActiveGroup( null );
         openModalName();
          
     }

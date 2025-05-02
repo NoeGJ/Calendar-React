@@ -28,18 +28,13 @@ export const useRepoStore = () => {
         const formData = new FormData();
         formData.append("file", file );
         
-        //console.log(file);
-        
-
         try {
              const { data } = await calendarApi.post(`/files/upload`, formData, {
                  params: { user: userId, group: groupId },
                  headers: { 'Content-Type': 'multipart/form-data' }
               });
-              //console.log( data );
               
             dispatch( onAddFile( data ) );
-            
             
         } catch (error) {
             console.log(error);
@@ -63,8 +58,6 @@ export const useRepoStore = () => {
         try {
             
             const { data } = await calendarApi.get(`/files`, { params: { group: activeGroup.id } });
-
-            //console.log(data);
         
             dispatch( onLoadFiles( data ) );
 
@@ -77,12 +70,11 @@ export const useRepoStore = () => {
         try {
             const { data, headers } = await calendarApi.get(`/files/${ file.id }/download`, { responseType: 'blob' });
 
-            //console.log( data, headers );
             const type = file.name.split('.');
             
             const fileName = headers['content-disposition']?.split('filename=')[1]  || 'descarga';
             
-            const url = window.URL.createObjectURL( new Blob([  data /*data.name*/ ]));
+            const url = window.URL.createObjectURL( new Blob([  data ]));
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', `${fileName}.${type[type.length -1]}`);
