@@ -1,5 +1,6 @@
 import Modal from "react-modal";
 import { useCalendarStore, useGroupsStore, useViewModalsStore } from "../../hooks";
+import { useEffect } from "react";
 
 export const PanelModal = () => {
 
@@ -11,17 +12,25 @@ export const PanelModal = () => {
       bottom: "auto",
       marginRight: "-20%",
       transform: "translate(-50%, -50%)",
-      width: "500px",
+      width: "90%",
     },
   };
 
   const { isOpenPanel, closePanel } = useViewModalsStore();
-  const { events } = useCalendarStore(); // Asegúrate que cada evento tiene al menos { title, category }
-  const { groups } = useGroupsStore();   // Si los grupos tienen info de categoría, también puedes usarlos
+ const { events } = useCalendarStore(); 
+ const { loadCategories, activeGroup } = useGroupsStore();
+
+  useEffect(() => {
+      if( activeGroup.length <= 0 ) return;
+      loadCategories();
+    console.log(
+      events)
+    
+  }, [activeGroup])
 
   // Agrupar eventos por categoría
   const groupedEvents = events.reduce((acc, curr) => {
-    const categories = curr.category || "Sin categoría";
+    const categories = curr.category || "__no_category__";
     if (!acc[categories]) acc[categories] = [];
     acc[categories].push(curr.title || "Evento sin título");
     return acc;
@@ -36,37 +45,33 @@ export const PanelModal = () => {
       overlayClassName="modal-fondo"
       closeTimeoutMS={200}
     >
-      <div>
-        <h3 style={{ textAlign: "center", marginBottom: 20 }}>Panel de Eventos</h3>
+      <h3 style={{ textAlign: "center", marginBottom: 20 }}>Panel de Eventos</h3>
+      <div style={{ height: '90%', overflowY: 'auto'}}>
         {Object.keys(groupedEvents).length === 0 && (
           <p>No hay eventos disponibles.</p>
         )}
-        {Object.keys(groupedEvents).map((categories) => (
+        <div>
+        {Object.keys(groupedEvents).map((categories, index) => {          
+          const display = categories === "__no_category__" ? 'Sin Categoría' : categories
+          return(
           <div
-            key={categories}
+          className={ `text-black `}
+            key={index}
             style={{
-              backgroundColor:
-              categories === "personal"
-                  ? "#dff0f0"
-                  : categories === "escuela"
-                  ? "#f0def0"
-                  : "#f0f5d0",
               padding: 10,
               marginBottom: 10,
-              borderRadius: 8,
             }}
           >
-            <strong>{categories}</strong>
-            <ul style={{ marginTop: 5 }}>
+            <strong className={ categories !== "__no_category__" ? '' : 'text-danger' }>{ display }</strong>
+            <ul className="list-group list-group-flush" style={{ marginTop: 5 }}>
               {groupedEvents[categories].map((evento, index) => (
-                <li key={index}>{evento}</li>
+                <li className="list-group-item " key={index}>{evento}</li>
               ))}
             </ul>
           </div>
-        ))}
+        )})}
+        </div>
       </div>
     </Modal>
   );
 };
-
-

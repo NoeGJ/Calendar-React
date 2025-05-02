@@ -73,10 +73,9 @@ export const NavBar = () => {
               <button className="btn btn-dark me-2 my-0" onClick={handleRepoBtn}>
                 <i className="fa-solid fa-archive"></i> Repo
               </button>
-              <Dropdown  className="btn" style={{ display: 'inline-block', width: 'auto', height: '100%'}}>
-            <Dropdown.Toggle variant="secondary">
-            <i className="fas fa-book"></i>
-              Vistas
+            <Dropdown   style={{ display: 'inline-block', width: 'auto', height: '100%', position: 'relative'}}>
+            <Dropdown.Toggle className="btn btn-dark me-2 my-0">
+            <i className="fas fa-book"></i> Vistas
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => openList() }> Lista </Dropdown.Item>

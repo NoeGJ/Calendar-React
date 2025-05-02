@@ -12,12 +12,16 @@ export const ListModal = () => {
             bottom: "auto",
             marginRight: "-20%",
             transform: "translate(-50%, -50%)",
-            width: '500px',
+            width: '90%',
+            display: 'inline-block',
+            minWidth: '350px',
+            maxWidth: '500px',
+            
         },
     };
 
     const { isOpenList, closeList } = useViewModalsStore();
-    const { events, categories } = useCalendarStore();
+    const { events } = useCalendarStore();
     const { loadCategories, activeGroup } = useGroupsStore();
 
     useEffect(() => {
@@ -41,8 +45,9 @@ export const ListModal = () => {
     >   
      <div>
           <h3>Listado</h3>
+          <div style={{  height: '100%', width: '100%',  overflowY: 'auto' }}>
           { events.length > 0 ?
-          <table style={{ width: "100%", backgroundColor: "#ddd" }}>
+          <table className="table table-hover table-striped" style={{ width: "100%", height: '100px', overflowY: 'visible'}}>
             <thead>
               <tr>
                 <th>Eventos</th>
@@ -53,7 +58,7 @@ export const ListModal = () => {
               {events?.map((item, index) => (
                 <tr key={index}>
                   <td>{item.title}</td>
-                <td>{item.category}</td> 
+                <td className={ item.category ? '' : `text-danger`}>{item.category || 'Sin categoría'}</td> 
                 </tr>
               ))}
             </tbody>
@@ -61,13 +66,10 @@ export const ListModal = () => {
           : (
             <div className="container col-md-6 align-items-center justify-content-center" style={{ height: '600px', position: 'relative', top: '200px' }}>
               <p> No hay eventos disponibles</p>
-              <button className="btn bg-primary text-white col">
-                <i className="fa fa-plus"></i>
-                  {`\tNuevo`}
-              </button>
             </div>
           )
-          }
+        }
+        </div>
         </div>
     
     </Modal>
