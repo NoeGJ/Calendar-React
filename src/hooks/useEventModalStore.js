@@ -12,9 +12,9 @@ export const useEventModalStore = () => {
     const { activeGroup } = useSelector( state => state.groups );
     const { activeEvent } = useCalendarStore();
 
-    const openEventModal = () => {
-        dispatch( onOpenEventModal() );
+    const openEventModal = () => {        
         getEventWithDeatils(activeEvent);
+        dispatch( onOpenEventModal() );
     }
 
     const closeEventModal = () => {

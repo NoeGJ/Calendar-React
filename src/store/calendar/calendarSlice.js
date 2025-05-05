@@ -21,6 +21,7 @@ export const calendarSlice = createSlice({
         isLoadingEvents: true,
         events: [],
         activeEvent: null,
+        eventFormResources: null,
     },
     reducers: {
         onSetActiveEvent: (state, { payload }) => {        
@@ -70,9 +71,30 @@ export const calendarSlice = createSlice({
             state.isLoadingEvents = true
             state.events = []
             state.activeEvent = null
+        },
+        onLoadEventFormResources: ( state, resources ) => {
+            const { payload } = resources
+            state.eventFormResources = {
+                members: payload.members,
+                categories: payload.categories,
+                files: payload.files,
+            };
+        },
+        onCloseEventFormResources: ( state ) => {
+            state.eventFormResources = null
         }
     }
 
 });
 // Action creators are generated for each case reducer function
-export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent, onLoadEvents, onResetEvents, onLogoutCalendar } = calendarSlice.actions;
+export const { 
+    onSetActiveEvent, 
+    onAddNewEvent, 
+    onUpdateEvent, 
+    onDeleteEvent, 
+    onLoadEvents, 
+    onResetEvents, 
+    onLogoutCalendar,
+    onLoadEventFormResources,
+    onCloseEventFormResources
+} = calendarSlice.actions;
