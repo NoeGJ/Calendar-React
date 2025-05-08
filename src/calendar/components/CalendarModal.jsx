@@ -12,6 +12,7 @@ import { getEnvVariables, getPrioList } from "../../helpers";
 import {
   Dropdown
 } from 'react-bootstrap'
+import { FileIdsPanel } from "./FileIdsPanel";
 
 registerLocale('es', es)
 
@@ -65,13 +66,18 @@ if( getEnvVariables().VITE_MODE !== 'test' )
 
     if( activeEvent !== null ){
       
-      const { activities, start, end, priority, assignee, ...event } = activeEvent;
+      const { activities, start, end, priority, assignee, files, ...event } = activeEvent;
 
       const prio = Object.entries( getPrioList() ).find( ([ key, value ]) => value[0] == priority )
       
       if(!prio ) return;
       
-      setFormValues({ ...event, end: new Date(end), start: new Date(start), priority: prio[0], assigneeId: assignee?.uid });
+      let fileIds = [];
+      if(files){
+        fileIds = files.map( (file) => file.id );
+      }
+
+      setFormValues({ ...event, end: new Date(end), start: new Date(start), priority: prio[0], assigneeId: assignee?.uid, fileIds: fileIds });
 
       setActivities( activities ? activities : [] );
       
@@ -100,6 +106,8 @@ if( getEnvVariables().VITE_MODE !== 'test' )
   }
 
   const onCloseModal = () => {
+    //Reset manual del listado de ids de referencias de archivos
+    setFormValues({ ...formValues, fileIds: [] });
     closeDateModal();
     setActiveEvent(null);
     setActivity("");
@@ -121,7 +129,7 @@ if( getEnvVariables().VITE_MODE !== 'test' )
     if ( formValues?.category == undefined )
       delete formValues.category
 
-    console.log(formValues.assigneeId);
+    console.log(formValues.fileIds);
 
     await startSavingEvent({ ...formValues, activities: activities  });
 
@@ -347,6 +355,13 @@ if( getEnvVariables().VITE_MODE !== 'test' )
             }
           </ul>
         </div>
+        { isDateModalOpen ? (
+          <FileIdsPanel 
+          files={eventFormResources?.files ?? []} 
+          onFileIdsChange={onInputChanged}
+          selectedFileIds={formValues.fileIds ?? []}
+          />
+        ) : ''}
         </div>
         <button type="submit" className="btn btn-outline-primary btn-block">
           <i className="far fa-save"></i>
