@@ -12,6 +12,7 @@ import { getEnvVariables, getPrioList } from "../../helpers";
 import {
   Dropdown
 } from 'react-bootstrap'
+import { FileIdsPanel } from "./FileIdsPanel";
 
 registerLocale('es', es)
 
@@ -29,10 +30,9 @@ const customStyles = {
 if( getEnvVariables().VITE_MODE !== 'test' )
     Modal.setAppElement("#root");
   
-  
   export const CalendarModal = () => {
     
-    const { isDateModalOpen, closeDateModal } = useUiStore();
+    const { isDateModalOpen, eventFormResources ,closeDateModal } = useUiStore();
     const { activeEvent, startSavingEvent, setActiveEvent } = useCalendarStore();
     
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -43,13 +43,16 @@ if( getEnvVariables().VITE_MODE !== 'test' )
       start: new Date(),
       end:  addHours( new Date(), 2),
       category: '',
-      priority: 0
+      priority: 0,
+      assigneeId: null,
+      fileIds: []
   });
   
   const [activities, setActivities] = useState([])
 
   const [activity, setActivity] = useState('')
   const [prioritySel, setPrioritySel] = useState('Opcional')
+  const [assigneeSel, setAssigneeSel] = useState(0)
   
   const titleClass = useMemo(() => {
     if( !formSubmitted ) return '';
@@ -63,17 +66,26 @@ if( getEnvVariables().VITE_MODE !== 'test' )
 
     if( activeEvent !== null ){
       
-      const { activities, start, end, priority, ...event } = activeEvent
-      
+      const { activities, start, end, priority, assignee, files, ...event } = activeEvent;
+
       const prio = Object.entries( getPrioList() ).find( ([ key, value ]) => value[0] == priority )
       
       if(!prio ) return;
       
-      setFormValues({ ...event, end: new Date(end), start: new Date(start), priority: prio[0]  });
+      let fileIds = [];
+      if(files){
+        fileIds = files.map( (file) => file.id );
+      }
+
+      setFormValues({ ...event, end: new Date(end), start: new Date(start), priority: prio[0], assigneeId: assignee?.uid, fileIds: fileIds });
 
       setActivities( activities ? activities : [] );
       
       setPrioritySel( prio[1][1] );
+
+      if(assignee){
+        setAssigneeSel( assignee.uid );
+      }
     }
   
   }, [activeEvent])
@@ -94,6 +106,8 @@ if( getEnvVariables().VITE_MODE !== 'test' )
   }
 
   const onCloseModal = () => {
+    //Reset manual del listado de ids de referencias de archivos
+    setFormValues({ ...formValues, fileIds: [] });
     closeDateModal();
     setActiveEvent(null);
     setActivity("");
@@ -112,8 +126,10 @@ if( getEnvVariables().VITE_MODE !== 'test' )
 
     if( formValues.title.length <= 0) return;
 
-     if ( formValues?.category == undefined )
-       delete formValues.category
+    if ( formValues?.category == undefined )
+      delete formValues.category
+
+    console.log(formValues.fileIds);
 
     await startSavingEvent({ ...formValues, activities: activities  });
 
@@ -155,12 +171,22 @@ if( getEnvVariables().VITE_MODE !== 'test' )
     setFormValues({ ...formValues, priority: key });
   }
 
+  const onAssigneeChanged = ( { target } ) => {
+
+    setAssigneeSel( target.value );
+
+    setFormValues({
+      ...formValues,
+      [target.name]: target.value
+    });
+  }
+
   return (
     <Modal
       isOpen={ isDateModalOpen }
       onRequestClose={onCloseModal}
       style={customStyles}
-      className="modal"
+      className="modal px-1"
       overlayClassName="modal-fondo"
       closeTimeoutMS={200}
     >
@@ -215,21 +241,9 @@ if( getEnvVariables().VITE_MODE !== 'test' )
         </div>
 
         <hr />
+        
         <div className="form-group mb-2">
-          <label>Categorización</label>
-          <input
-            type="text"
-            className={`form-control`}
-            placeholder="Categoria"
-            name="category"
-            autoComplete="off"
-            value={ formValues.category || '' }
-            onChange={ onInputChanged }
-          />
-        </div>
-
-        <div className="form-group mb-2">
-          <label>Titulo y notas</label>
+          <label>Titulo</label>
           <input
             type="text"
             className={`form-control ${ titleClass }`}
@@ -240,7 +254,44 @@ if( getEnvVariables().VITE_MODE !== 'test' )
             onChange={ onInputChanged }
           />
           <small id="emailHelp" className="form-text text-muted">
-            Una descripción corta
+            Nombre del evento.
+          </small>
+        </div>
+
+        <div className="form-group mb-2">
+        <label>Categorización</label>
+          <input
+              type="text"
+              className="  custom-select custom-select-sm mr-2"
+              placeholder="Categoría"
+              name="category"
+              autoComplete="off"
+              value={ formValues.category || '' }
+              onChange={ onInputChanged }
+              list="categoryOptions"
+            />
+          <datalist id="categoryOptions">
+              {eventFormResources?.categories.map((category ) => (
+                <option value={category.name} key={category.id}></option>
+              ))}
+          </datalist>
+          <small id="emailHelp" className="form-text text-muted">
+            Categoría a la cual pertenecerá el evento.
+          </small>
+        </div>
+
+        <div className="form-group mb-2">
+          <label>Asignación</label>
+          <br/>
+          <select id="assigneeId" name="assigneeId" value={ assigneeSel || 0 }
+            className="form-control" onChange={ onAssigneeChanged }>
+            <option key={ 0 } value={ "null" }>Elija un miembro...</option>
+            { eventFormResources?.members.map( (member) => {
+              return ( <option key={ member.uid } value={ member.uid }>{ member.username }</option> );
+            })}
+          </select>
+          <small id="emailHelp" className="form-text text-muted">
+            Miembro encargado de llevar a cabo el evento y sus actividades.
           </small>
         </div>
 
@@ -304,6 +355,13 @@ if( getEnvVariables().VITE_MODE !== 'test' )
             }
           </ul>
         </div>
+        { isDateModalOpen ? (
+          <FileIdsPanel 
+          files={eventFormResources?.files ?? []} 
+          onFileIdsChange={onInputChanged}
+          selectedFileIds={formValues.fileIds ?? []}
+          />
+        ) : ''}
         </div>
         <button type="submit" className="btn btn-outline-primary btn-block">
           <i className="far fa-save"></i>
