@@ -1,13 +1,9 @@
-import { Dropdown } from "react-bootstrap";
 import { checkRole, getRolesList, roleMessage } from "../../helpers";
 import { useAuthStore, useDrawerStore, useGroupsStore, useMembersModal, useViewModalsStore, useViewStore } from "../../hooks"
-//import { MembersModal, ListModal, PanelModal } from ".";
 import { MembersModal, ListModal, PanelModal } from "../";
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
-
+import { Navbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 
 export const NavBar = () => {
-
   
   const { startLogout } = useAuthStore();
   const { isOpenDrawer, openDrawer, closeDrawer } = useDrawerStore();
@@ -16,8 +12,7 @@ export const NavBar = () => {
   const { changeView } = useViewStore();
   const { activeGroup, currentRoles } = useGroupsStore();
   const {  openList, openPanel } = useViewModalsStore();
-  
-  
+    
   const handleToggleDrawer = () => {
     if (isOpenDrawer) closeDrawer();
     else openDrawer();
@@ -40,7 +35,6 @@ export const NavBar = () => {
   }
 
   const handleCalendarBtn = () => {
-
     changeView({ type: 'calendar', view: 1 })
     
   }
@@ -53,7 +47,7 @@ export const NavBar = () => {
         <button className="btn btn-dark me-2" onClick={handleToggleDrawer}>
           <i className="fa-solid fa-bars"></i>
         </button>        
-          { activeGroup == null ? '' : activeGroup.name }    
+          <small title={ activeGroup?.name }>{ activeGroup == null ? '' : activeGroup.name.length > 15 ? activeGroup.name.slice(0, 12) + "..." : activeGroup.name } </small>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="navbar-nav" />
 

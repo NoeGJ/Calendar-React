@@ -38,6 +38,7 @@ export const useAuthStore = () => {
         dispatch( onChecking() );
 
         try {
+                        
             const { data } = await calendarApi.post('/auth/sign-in', { username: name, email, password });
             
             localStorage.setItem('token', data.token );

@@ -167,7 +167,45 @@ hr {
   
 }
 
+.accordion-button {
+  background-color: transparent; /* o el color que prefieras */
+  color: #333;
+  box-shadow: none;
+  border: none;
+  font-weight: bold;
+  padding: 0.50rem 0rem;
+}
 
+.accordion-button:not(.collapsed) .toggle-icon {
+  content: "";
+  transform: rotate(180deg);
+  color: #000;
+}
 
+.accordion-button:not(.collapsed) .toggle-icon::before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f068";
+  color: #000;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.fixed-footer-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0rem;
+  background: white;
+  padding: 0.75rem;
+  border-top: 1px solid #ddd;
+  width: 100%;
+  text-align: right;
+}
 
   

@@ -28,30 +28,18 @@ export const Drawer = () => {
     
     if (group == activeGroup) return;
     
-    console.log("navbar", group);
-    
     changeView({ type: 'calendar', view: 1 })
 
     setActiveGroup( group );
+    resetEvents();
     
-    // if (group != activeGroup )
-    //       resetEvents();
-    
-    // setActiveGroup( group );
-    // setActiveEvent( null );
-    
-    
-    //console.log(hasGroupSelected);
-    //console.log(index);
     closeDrawer();
 }
 
 const handleHomeBtn = () => {
 
     changeView({ type: 'unselected', view: 0 });
-    // resetEvents();  
     setActiveGroup( null );
-    // setActiveEvent( null );
     closeDrawer();
     }
 
@@ -97,16 +85,16 @@ const handleHomeBtn = () => {
               </div>
               <i className={`fa-solid fa-chevron-${isOpen ? "up" : "down"}  mr-2 mb-1`}></i>
             </button>
-          <div className={`scroll-container mt-2 ${isOpen ? "open" : ""}`} 
+          <div className={`scroll-container mt-2 d-flex ${isOpen ? "open" : ""}`} 
                 style={{  maxHeight: isOpen ? "70vh" : "0px",
                   overflowY: isOpen ? "auto" : "hidden",
                   transition: "max-height 0.3s ease-in-out" }}>
-            <ul className="list-group list-group-flush w-100">
+            <ul className="list-group list-group-flush w-100 d-flex align-items-center justify-content-between">
               {groups.map((group, index) => (
                 <li className={`list-group-item list-group-item-action list-group-item-dark d-flex align-items-center justify-content-between`}  key={index} title={ group.name }>
                 <span  style={{ cursor: 'pointer', flexGrow: 1, fontWeight: 'normal', width: 'auto', display: 'inline-block'}} onClick={ () => handleSelectGroup(group, index) }>
-                  { group.name.length > 20 ? group.name.slice(0, 17) + '...' : group.name } -
-                <sub> { group.creatorId == user.uid ? 'Propio': 'Miembro' }</sub>
+                  { group.name.length > 20 ? group.name.slice(0, 17) + '...' : group.name }
+                <sub className="d-block"> { group.creatorId == user.uid ? 'Dueño': 'Miembro' }</sub>
                 </span>
                 {group.creatorId == user.uid &&
                 <Dropdown className="hidden-btn" style={{ display: 'inline-block', width: 'auto', height: '100%'}} >

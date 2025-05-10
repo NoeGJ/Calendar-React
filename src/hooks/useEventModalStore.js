@@ -19,6 +19,7 @@ export const useEventModalStore = () => {
 
     const closeEventModal = () => {
         dispatch( onCloseEventModal() );
+        
     }
 
     const getEventWithDeatils = async (calendarEvent) => {

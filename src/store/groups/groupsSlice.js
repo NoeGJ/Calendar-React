@@ -74,7 +74,7 @@ export const groupsSlice = createSlice({
         },
 
         onAddNewMember: (state, { payload }) => {
-
+            payload.state = "pending";
             state.subscribedMembers.push( payload )
         },
         onDeleteMember: ( state, { payload }) => {
@@ -106,6 +106,16 @@ export const groupsSlice = createSlice({
         onUpdateRoles: ( state, { payload } ) => {
 
         },
+        onLoadPendingUsers: ( state, { payload } ) => {
+            payload?.map( element => {
+                element.state = "pending";
+                state.subscribedMembers.push( element );
+            });
+
+            state.unsubscribedMembers = state.unsubscribedMembers.filter( element => 
+                !payload.some( item => item.uid === element.uid)
+            );                        
+        },
         onDeleteUnsubscribed: ( state, { payload } ) => {
             state.unsubscribedMembers = state.unsubscribedMembers.filter( member => member.uid != payload.uid );
         },
@@ -136,6 +146,7 @@ export const {
     onLogoutGroups,
     onAddNewMember,
 
+    onLoadPendingUsers,
     onLoadunsubscribed,
     onLoadsubscribedMembers,
     onDeleteMember,

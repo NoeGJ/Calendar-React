@@ -28,14 +28,15 @@ export const useCalendarStore = () => {
         try {
             const { activities, ...event } = calendarEvent
 
-            console.log( event );
-
             if( calendarEvent.id ){
                 //updating
 
+                console.log(calendarEvent);
+                
+
                 await calendarApi.put(`/groups/${ activeGroup.id }/events/${ calendarEvent.id }`, event );
     
-                if(activities.length){
+                if(activities != null){
                     await calendarApi.put(`/activities/create-many-from-event/${ calendarEvent.id }`, activities );
                 }
 
@@ -53,7 +54,6 @@ export const useCalendarStore = () => {
             dispatch( onAddNewEvent({ ...event, id: data.id, creator: user, activities }) );
 
         } catch (error) {
-            //console.log(error);
             Swal.fire('Error al guardar', error.response.data?.msg, 'error');
         }
     }
@@ -82,6 +82,7 @@ export const useCalendarStore = () => {
         try {
             
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/events`);
+            console.log( data )
             
             const events = convertEventsToDateEvents( data );
             dispatch( onLoadEvents( events ) );

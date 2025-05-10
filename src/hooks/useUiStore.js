@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { onCloseDateModal, onOpenDateModal, onLoadEventFormResources, onCloseEventFormResources } from "../store";
+import { onCloseDateModal, onOpenDateModal, onLoadEventFormResources, onCloseEventFormResources, onSetActiveEvent } from "../store";
 import { calendarApi } from "../api";
 
 export const useUiStore = () => {
@@ -26,6 +26,7 @@ export const useUiStore = () => {
     }
 
     const closeDateModal = () => {
+        dispatch( onSetActiveEvent(null) );
         dispatch( onCloseDateModal() );
         dispatch( onCloseEventFormResources() );
     }

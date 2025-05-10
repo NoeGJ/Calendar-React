@@ -16,6 +16,7 @@ export const UnselectedGroup = () => {
     const colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-info']
 
     useEffect(() => {
+    console.log(groups);
       const selectGroup = JSON.parse( localStorage.getItem('group'));
       if (!selectGroup ) return;
       
@@ -59,7 +60,7 @@ export const UnselectedGroup = () => {
                         <div className="card bg-light text-secondary col m-2 justify-content-center align-items-center shadow-5" style={{ cursor: 'pointer' }} onClick={ handleNewGroup }>
                             
                             <div className="card-body mt-3">
-                                <h5 className="card-title mb-3">Crear Nuevo Grupo</h5>
+                                <h5 className="card-title mb-3"> Nuevo Grupo</h5>
                                 
                             </div>
                         </div>
@@ -86,7 +87,7 @@ export const UnselectedGroup = () => {
                                 <i className="fa-solid fa-ellipsis" />
                                 </button> */}
                                 <div className="card-body justify-content-center align-items-center" style={{ cursor: 'pointer' }} onClick={ () => handleSelectGroup(group, index ) }>
-                                    <h5 className="card-title">{group.name}</h5>
+                                    <h5 title={ group.name } className="card-title">{group.name.length > 20 ? group.name.slice(0,17) + "..." : group.name }</h5>
                                     <br/>
                                     <p className="d-flex card-text"></p>
                                 </div>

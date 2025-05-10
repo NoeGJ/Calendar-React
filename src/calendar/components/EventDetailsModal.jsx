@@ -1,11 +1,11 @@
 import Modal from "react-modal";
 import { useCalendarStore, useUiStore } from "../../hooks";
-import { useEventModalStore } from "../../hooks";
-import { getPrioList } from "../../helpers";
+import { useEventModalStore, useRepoStore } from "../../hooks";
+import { formatBytes, getPrioList } from "../../helpers";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useEffect, useState } from "react";
-import { Tab, Tabs } from "react-bootstrap";
+import { Tab, Tabs, Card } from "react-bootstrap";
 
 const customStyles = {
   content: {
@@ -28,6 +28,13 @@ export const EventDetailsModal = () => {
   const { openDateModal } = useUiStore();
   const { isEventModalOpen, closeEventModal, removeEventWithDeatils } =
     useEventModalStore();
+    const {  downloadFile } = useRepoStore();
+
+  const ESTADOS_ACTIVIDAD = {
+    NO_INICIADA: { title: "No iniciada", color: "bg-secondary" },
+    EN_DESARROLLO: { title: "En desarrollo", color: "bg-warning" },
+    TERMINADA: { title: "Terminada", color: "bg-success" },
+  };
 
   const colorsPrid = [
     "#007bff",
@@ -46,6 +53,7 @@ export const EventDetailsModal = () => {
           return value[0] === activeEvent?.priority;
         })
       );
+      console.log(activeEvent);
     }
   }, [activeEvent]);
 
@@ -64,6 +72,11 @@ export const EventDetailsModal = () => {
     removeEventWithDeatils();
     setActiveEvent(null);
   };
+
+  const onClickDownload = ( file ) => {
+    console.log(file);
+    downloadFile( file )
+  }
 
   return (
     <Modal
@@ -200,6 +213,22 @@ export const EventDetailsModal = () => {
                     </span>
                   </div>
                 </div>
+                <div className="col">
+                  <div className="d-block">
+                    <span className="d-block font-weight-bold mr-2">
+                      Asignado
+                    </span>
+                    <span
+                      className={`text-${
+                        activeEvent?.assignee != null ? "primary" : "danger"
+                      }`}
+                    >
+                      {activeEvent?.assignee != null
+                        ? activeEvent?.assignee.username
+                        : "Sin asignar"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </Tab>
 
@@ -210,7 +239,6 @@ export const EventDetailsModal = () => {
                   height: "200px",
                   maxHeight: "200px",
                   minHeight: "150px",
-                  overflowY: "auto",
                 }}
                 name="notas"
                 id="notas"
@@ -218,39 +246,72 @@ export const EventDetailsModal = () => {
                 value={activeEvent?.notes}
               ></textarea>
             </Tab>
+            <Tab
+              eventKey="actividades"
+              title="Actividades"
+              style={{ height: "400px" }}
+            >
+              <div
+                className="d-block h-100 justify-content-center"
+                style={{ maxHeight: "400px", overflow: "auto" }}
+              >
+                <ul className="list-group list-group-flush">
+                  {activeEvent?.activities?.map((value, index) => (
+                    <>
+                      <li className="mb-2 list-group-item" key={index}>
+                        <div className="d-flex justify-content-between text-primary">
+                          {value.name}
+                          <div className="">
+                            <span
+                              className={`badge ${
+                                ESTADOS_ACTIVIDAD[value.status].color
+                              } text-white`}
+                            >
+                              {ESTADOS_ACTIVIDAD[value.status].title}
+                            </span>
+                          </div>
+                        </div>
+                      </li>
+                    </>
+                  ))}
+                </ul>
+              </div>
+            </Tab>
+            <Tab
+              eventKey="recursos"
+              title="Recursos"
+              style={{ height: "400px" }}
+            >
+              <div
+                className="d-block h-100 justify-content-center"
+                style={{ maxHeight: "400px", overflow: "auto" }}
+              >
+                {activeEvent?.files?.map((value, index) => (
+                  <>
+                    <Card className="mb-2" key={index}>
+                      <Card.Body>
+                        <div className="d-flex justify-content-between text-primary">
+                          <div className="d-block">
+                            <div>{value.name}</div>
+                            <div>{formatBytes(value.size)}</div>
+                          </div>
+                          <div className="">
+                            <span className={`badge`}>
+                              <button className="btn text-primary" onClick={ () => onClickDownload( value ) }>
+                                <i className="fa fa-download"></i>
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  </>
+                ))}
+              </div>
+            </Tab>
           </Tabs>
 
           <div className="row my-2 border-top border-black"></div>
-
-          <h5 className="fw-bold">Actividades</h5>
-          <div
-            className="list-group"
-            style={{ overflowY: "auto", minHeight: "30px", height: "100%" }}
-          >
-            {activeEvent?.activities?.map((activity, key) => (
-              <div
-                className="d-flex list-group-flush list-group-item-action justify-items-center align-items-center"
-                style={{ height: "40px" }}
-                key={key}
-              >
-                <div className="col ">
-                  <input
-                    className="mr-2"
-                    type="checkbox"
-                    checked={activity.status !== "Pending"}
-                    readOnly
-                    disabled
-                    style={{
-                      overflowY: "auto",
-                      maxHeight: "200px",
-                      minHeight: "150px",
-                    }}
-                  />
-                </div>
-                <div className="col">{activity.name}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </Modal>

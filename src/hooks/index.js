@@ -11,3 +11,4 @@ export * from './useMembersModal';
 export * from './useViewStore';
 export * from './useViewModalsStore';
 export * from './useEventModalStore';
+export * from './useRepoStore'

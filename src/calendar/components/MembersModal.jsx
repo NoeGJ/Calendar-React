@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import { Dropdown } from "react-bootstrap";
 
 import { useAuthStore, useGroupsStore, useMembersModal } from "../../hooks";
-import { checkRole, getRolesList } from "../../helpers";
+import { getRolesList } from "../../helpers";
 import Swal from "sweetalert2";
 
 const customStyles = {
@@ -25,6 +25,7 @@ export const MembersModal = () => {
   const { isOpenModalMembers, closeModalMembers } = useMembersModal();
   const {
     currentPermissions,
+    activeGroup,
     startAddNewMember,
     loadUnsubscribed,
     unsubscribedMembers,
@@ -42,8 +43,8 @@ export const MembersModal = () => {
 
   useEffect(() => {
     loadUnsubscribed();
-
-  }, []);
+    
+  }, [activeGroup]);
 
   const handleInputChanged = ({ target }) => {
     setEmail(target.value);
@@ -81,10 +82,16 @@ export const MembersModal = () => {
     });
   };
 
+  const onCloseModal = () => {
+    console.log( unsubscribedMembers );
+    console.log( subscribedMembers );
+    closeModalMembers();
+  }
+
   return (
     <Modal
       isOpen={isOpenModalMembers}
-      onRequestClose={closeModalMembers}
+      onRequestClose={onCloseModal}
       className=""
       overlayClassName="modal-fondo"
       closeTimeoutMS={200}
@@ -139,7 +146,8 @@ export const MembersModal = () => {
                     </small>
                   </div>
                   <div className="d-flex align-items-center gap-1">
-                    {!member.currentRoles.some((role) => role.id == getRolesList().Creador) ? (
+                    {member?.state !== "pending" ? ( <>
+                    {!member?.currentRoles.some((role) => role.id == getRolesList().Creador) ? (
                     <Dropdown drop="end">
                       <Dropdown.Toggle
                         variant="primary"
@@ -158,7 +166,7 @@ export const MembersModal = () => {
                                 <input
                                   className="form-check-input me-2"
                                   type="checkbox"
-                                  checked={member.currentRoles.some(
+                                  checked={member?.currentRoles.some(
                                     (role) => role.id == value
                                   )}
                                   onChange={(event) =>
@@ -175,7 +183,7 @@ export const MembersModal = () => {
                     :
                     <span  className="badge bg-primary text-white">Creador</span>
                     }
-                    {!member.currentRoles.some((role) => role.id == getRolesList().Creador) && (
+                    {!member?.currentRoles.some((role) => role.id == getRolesList().Creador) && (
                       <button
                         className="btn btn-outline-danger btn-sm ml-2"
                         onClick={() => handleDeleteMember(member.uid)}
@@ -183,6 +191,12 @@ export const MembersModal = () => {
                         <i className="fa fa-user-times"></i>
                       </button>
                     )}
+                  </>):(
+                  <span className="text-danger">
+                    <small>Por confirmar</small>
+                    </span>
+                    
+                )}
                   </div>
                 </div>
               </li>

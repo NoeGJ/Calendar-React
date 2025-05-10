@@ -8,6 +8,7 @@ import {
     onAddNewMember, 
     onLoadsubscribedMembers,
     onDeleteUnsubscribed,
+    onLoadPendingUsers,
     onDeleteMember,
     onUpdateGroup,
     onDeleteGroup,
@@ -112,8 +113,8 @@ export const useGroupsStore = () => {
     const startAddNewMember = async (  newMember ) => {
         try {
             
-            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`,null, { params: { newMember: newMember.uid }});            
-            
+            const { data } = await calendarApi.post(`/groups/${ activeGroup.id }/add-member`,null, { params: { newMember: newMember.uid }});
+                        
             dispatch( onAddNewMember( data ) );
 
             dispatch( onDeleteUnsubscribed( data ) );
@@ -127,8 +128,11 @@ export const useGroupsStore = () => {
     const loadUnsubscribed = async() => {
         try {
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/manage-members`);
+            
             dispatch( onLoadunsubscribed(  data.unsubscribedUsers ))
             dispatch( onLoadsubscribedMembers( data.members ) );
+
+            dispatch( onLoadPendingUsers( data.usersWithPendingInvitation ) );
             
         } catch (error) {
             console.log(error);
@@ -185,7 +189,6 @@ export const useGroupsStore = () => {
         try {
             
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/categories`);
-            console.log( data );
             dispatch( assignCategories( data ) );
             
         } catch (error) {

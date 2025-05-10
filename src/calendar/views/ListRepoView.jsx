@@ -67,6 +67,9 @@ const transferData = async( file ) => {
 }
 
 const handleDownload = ( file ) => {
+
+  console.log(file);
+  
   const res =  checkRole( currentRoles, getRolesList().Descarga );
   
   if(!res){
