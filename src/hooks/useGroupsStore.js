@@ -128,6 +128,7 @@ export const useGroupsStore = () => {
     const loadUnsubscribed = async() => {
         try {
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/manage-members`);
+            console.log( data );
             
             dispatch( onLoadunsubscribed(  data.unsubscribedUsers ))
             dispatch( onLoadsubscribedMembers( data.members ) );

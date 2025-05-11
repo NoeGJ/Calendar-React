@@ -43,7 +43,7 @@ export const MembersModal = () => {
 
   useEffect(() => {
     loadUnsubscribed();
-    
+      
   }, [activeGroup]);
 
   const handleInputChanged = ({ target }) => {

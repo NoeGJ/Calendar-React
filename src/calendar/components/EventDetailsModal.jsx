@@ -1,7 +1,7 @@
 import Modal from "react-modal";
-import { useCalendarStore, useUiStore } from "../../hooks";
+import { useCalendarStore, useGroupsStore, useUiStore } from "../../hooks";
 import { useEventModalStore, useRepoStore } from "../../hooks";
-import { formatBytes, getPrioList } from "../../helpers";
+import { checkRole, formatBytes, getPrioList, getRolesList } from "../../helpers";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useEffect, useState } from "react";
@@ -29,6 +29,7 @@ export const EventDetailsModal = () => {
   const { isEventModalOpen, closeEventModal, removeEventWithDeatils } =
     useEventModalStore();
     const {  downloadFile } = useRepoStore();
+    const { currentRoles } = useGroupsStore();
 
   const ESTADOS_ACTIVIDAD = {
     NO_INICIADA: { title: "No iniciada", color: "bg-secondary" },
@@ -277,6 +278,8 @@ export const EventDetailsModal = () => {
                 </ul>
               </div>
             </Tab>
+            {checkRole( currentRoles, getRolesList().Descarga ) &&
+            (
             <Tab
               eventKey="recursos"
               title="Recursos"
@@ -309,6 +312,7 @@ export const EventDetailsModal = () => {
                 ))}
               </div>
             </Tab>
+          )}
           </Tabs>
 
           <div className="row my-2 border-top border-black"></div>

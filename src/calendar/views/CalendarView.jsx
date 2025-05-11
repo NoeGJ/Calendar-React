@@ -15,9 +15,9 @@ export const CalendarView = () => {
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week')
 
   const eventStyleGetter = ( event, start, end, isSelected ) => {
-    const style = {
+    const style = {      
       backgroundColor:  '#347CF7',
-      borderRadius: '0px',
+      borderRadius: '6px',
       opacity: 0.8,
       color: 'white',
     }
@@ -69,6 +69,7 @@ export const CalendarView = () => {
     eventPropGetter={ eventStyleGetter }
     components={{
       event: CalendarEventBox
+      
     }}
     onDoubleClickEvent={ onDoubleClick }
     
