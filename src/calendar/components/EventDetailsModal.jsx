@@ -54,7 +54,6 @@ export const EventDetailsModal = () => {
           return value[0] === activeEvent?.priority;
         })
       );
-      console.log(activeEvent);
     }
   }, [activeEvent]);
 
@@ -75,7 +74,6 @@ export const EventDetailsModal = () => {
   };
 
   const onClickDownload = ( file ) => {
-    console.log(file);
     downloadFile( file )
   }
 

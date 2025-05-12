@@ -96,8 +96,6 @@ export const CalendarModal = () => {
         
       });
 
-      console.log(formValues);
-
       if (assignee) {
         setAssigneeSel(assignee.uid);
       }
@@ -144,11 +142,7 @@ export const CalendarModal = () => {
     if (formValues?.category == undefined) delete formValues.category;
 
     if( formValues.activities == undefined ) formValues.activities = []
-    
-
-    console.log( formValues );
-    
-
+        
     await startSavingEvent({ ...formValues });
 
     closeDateModal();
@@ -161,7 +155,6 @@ export const CalendarModal = () => {
     if (activity.trim() === "") return;
 
     setFormValues({...formValues, activities: [ ...(formValues.activities || []), { status: Object.keys(ESTADOS_ACTIVIDAD)[0], name: activity }]});
-    console.log(formValues);
     
     setActivity("");
   };

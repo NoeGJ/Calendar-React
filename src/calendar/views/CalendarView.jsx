@@ -48,8 +48,7 @@ export const CalendarView = () => {
   
   useEffect(() => {
       if(currentRoles.length === 0) return;
-      //console.log( currentRoles );
-      //console.log( subscribedMembers );
+
      startLoadingEvents();
          
   }, [currentRoles])

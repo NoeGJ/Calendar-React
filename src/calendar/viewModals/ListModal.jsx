@@ -27,8 +27,6 @@ export const ListModal = () => {
     useEffect(() => {
         if( activeGroup.length <= 0 ) return;
        loadCategories();
-      console.log(
-       events)
       
     }, [activeGroup])
     

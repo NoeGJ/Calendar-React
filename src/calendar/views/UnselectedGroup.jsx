@@ -16,7 +16,6 @@ export const UnselectedGroup = () => {
     const colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-info']
 
     useEffect(() => {
-    console.log(groups);
       const selectGroup = JSON.parse( localStorage.getItem('group'));
       if (!selectGroup ) return;
       
@@ -27,7 +26,6 @@ export const UnselectedGroup = () => {
     
 
     const handleSelectGroup = (group, index) => {
-        console.log(group);
         
         setActiveGroup( group )
         changeView({ type: 'Calendar', view: 1 });

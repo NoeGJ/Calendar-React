@@ -83,8 +83,6 @@ export const MembersModal = () => {
   };
 
   const onCloseModal = () => {
-    console.log( unsubscribedMembers );
-    console.log( subscribedMembers );
     closeModalMembers();
   }
 

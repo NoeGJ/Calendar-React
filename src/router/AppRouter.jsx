@@ -22,6 +22,7 @@ export const AppRouter = () => {
 
     return (
     <Routes>
+        
         {
             (status === 'not-authenticated')
             ? (

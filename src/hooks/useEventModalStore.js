@@ -27,8 +27,6 @@ export const useEventModalStore = () => {
             const { data } = await calendarApi.get(`/groups/${ activeGroup.id }/events/${ calendarEvent.id }`);
             const eventDetails = data;
 
-            console.log(eventDetails);
-
             if( eventDetails != null ){
                 dispatch( onSetActiveEvent( eventDetails ) );
             }

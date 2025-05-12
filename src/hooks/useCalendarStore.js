@@ -30,10 +30,7 @@ export const useCalendarStore = () => {
 
             if( calendarEvent.id ){
                 //updating
-
-                console.log(calendarEvent);
                 
-
                 await calendarApi.put(`/groups/${ activeGroup.id }/events/${ calendarEvent.id }`, event );
     
                 if(activities != null){
